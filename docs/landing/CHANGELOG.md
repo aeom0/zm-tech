@@ -18,6 +18,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 ### Cambiado
 
 - Avisos internos a `alberto@zmtechdev.com` vía ImprovMX; se dejó de usar `CONTACT_EMAIL`. Sin `RESEND_API_KEY` el lead igual se guarda.
+- Remitente de avisos: `no-responder@zmtechdev.com` (dominio verificado en Resend, 15-oct-2026) en vez del sandbox `onboarding@resend.dev`. La `RESEND_API_KEY` de Vercel se rotó a una key del dominio.
 - Locale: `middleware.ts` → `src/proxy.ts` (convención Next.js 16).
 - Sin `turbo-ignore` en `vercel.json` — Vercel salta proyectos no afectados del monorepo.
 

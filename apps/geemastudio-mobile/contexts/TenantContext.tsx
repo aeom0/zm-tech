@@ -2,8 +2,17 @@ import React, { createContext, useCallback, useContext, useEffect, useRef, useSt
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { type TenantConfig, defaultTenantConfig, mergeTenantConfig } from '@zmtech/tenant-config'
 import { useAuth } from '@/contexts/AuthContext'
-import { fetchTenantSettings, upsertTenantSettings } from '@/services/tenantSettingsService'
-import { insertEmpleadosTrasOnboarding } from '@/services/onboardingEmployeesService'
+import {
+  completeOnboarding,
+  insertOnboardingEmployees,
+  insertOnboardingServiceCategories,
+} from '@geemastudio/data'
+import { supabase } from '@/lib/supabase'
+import {
+  fetchTenantSettings,
+  resolveTenantSlug,
+  upsertTenantSettings,
+} from '@/services/tenantSettingsService'
 import { queryClient } from '@/lib/query-client'
 import {
   ALL_TENANT_ASYNC_KEYS,
@@ -38,6 +47,8 @@ interface TenantContextValue {
   isLoading: boolean
   pendingOnboardingEmployees: PendingOnboardingEmployee[]
   addPendingOnboardingEmployee: (row: Omit<PendingOnboardingEmployee, 'id'>) => void
+  /** Categorías elegidas en el paso 5 (sin sesión); se insertan al `markConfigured`. */
+  setPendingOnboardingCategories: (names: string[]) => void
 }
 
 const TenantContext = createContext<TenantContextValue | null>(null)
@@ -54,6 +65,7 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
   const [pendingOnboardingEmployees, setPendingOnboardingEmployees] = useState<
     PendingOnboardingEmployee[]
   >([])
+  const [pendingOnboardingCategories, setPendingOnboardingCategories] = useState<string[]>([])
   const freshStartDoneRef = useRef(false)
 
   const addPendingOnboardingEmployee = useCallback((row: Omit<PendingOnboardingEmployee, 'id'>) => {
@@ -64,6 +76,7 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
     await AsyncStorage.multiRemove([...ALL_TENANT_ASYNC_KEYS])
     setConfig(defaultTenantConfig)
     setPendingOnboardingEmployees([])
+    setPendingOnboardingCategories([])
     setIsConfigured(false)
     queryClient.clear()
   }, [])
@@ -148,67 +161,42 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
         error: 'No hay usuario autenticado para guardar la configuración.',
       }
     }
+    if (!isAdmin) {
+      return {
+        ok: false as const,
+        error:
+          'Tu cuenta no tiene permiso para configurar el negocio (se requiere rol dueño). Entra con la cuenta del negocio.',
+      }
+    }
 
     try {
-      await upsertTenantSettings(config, userId)
-
-      if (pendingOnboardingEmployees.length > 0) {
-        if (!isAdmin) {
-          return {
-            ok: false as const,
-            error:
-              'Tu cuenta no tiene permiso para registrar equipo (se requiere rol dueño). Entra con la cuenta del negocio o pide acceso al administrador.',
-          }
-        }
-        const empResult = await insertEmpleadosTrasOnboarding(
-          pendingOnboardingEmployees.map(({ name, color }) => ({
-            name,
-            color,
-          }))
-        )
-        if (!empResult.ok) {
-          return {
-            ok: false as const,
-            error:
-              empResult.message.includes('row-level security') || empResult.message.includes('RLS')
-                ? 'No se pudo guardar el equipo (permisos). Revisa tu sesión o contacta soporte.'
-                : `No se pudo guardar el equipo: ${empResult.message}`,
-          }
-        }
-        setPendingOnboardingEmployees([])
-        void queryClient.invalidateQueries({ queryKey: ['employees'] })
-        void queryClient.invalidateQueries({
-          queryKey: ['employees', 'active'],
-        })
+      const tenantSlug = await resolveTenantSlug(userId)
+      if (!tenantSlug) {
+        return { ok: false as const, error: 'No encontramos tu negocio. Cierra sesión y vuelve a entrar.' }
       }
+
+      // Equipo y categorías primero; is_configured solo al final (igual que web).
+      // Si se marca antes y falla un insert, el dueño entra al panel sin esos datos.
+      await insertOnboardingEmployees(supabase, tenantSlug, pendingOnboardingEmployees)
+      await insertOnboardingServiceCategories(supabase, tenantSlug, pendingOnboardingCategories)
+      await completeOnboarding(supabase, tenantSlug, config)
+
+      setPendingOnboardingEmployees([])
+      setPendingOnboardingCategories([])
+      void queryClient.invalidateQueries({ queryKey: ['employees'] })
+      void queryClient.invalidateQueries({ queryKey: ['service_categories'] })
 
       await AsyncStorage.setItem(CONFIGURED_KEY, 'true')
       setIsConfigured(true)
       return { ok: true as const }
     } catch (error) {
-      // Log en desarrollo para depurar fallos al guardar configuración remota
-      console.error('[TenantContext] Error al hacer upsert de tenant_settings', error)
-
-      // Si RLS bloquea el upsert (nuevo row viola política), permitimos continuar
-      // marcando el tenant como configurado en local, para no bloquear el uso
-      // de la app durante el desarrollo. En producción se debería corregir la
-      // política en Supabase.
-      const message = error instanceof Error ? error.message : String(error ?? '')
-      const isRlsViolation =
-        typeof message === 'string' && message.toLowerCase().includes('row-level security')
-
-      if (isRlsViolation) {
-        await AsyncStorage.setItem(CONFIGURED_KEY, 'true')
-        setIsConfigured(true)
-        return { ok: true as const }
-      }
-
+      console.error('[TenantContext] Error al guardar el onboarding', error)
       return {
         ok: false as const,
-        error: 'Ocurrió un error al guardar la configuración en la nube. Inténtalo de nuevo.',
+        error: 'No pudimos guardar la configuración de tu negocio. Inténtalo de nuevo.',
       }
     }
-  }, [config, userId, isAdmin, pendingOnboardingEmployees])
+  }, [config, userId, isAdmin, pendingOnboardingEmployees, pendingOnboardingCategories])
 
   return (
     <TenantContext.Provider
@@ -221,6 +209,7 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
         isLoading,
         pendingOnboardingEmployees,
         addPendingOnboardingEmployee,
+        setPendingOnboardingCategories,
       }}
     >
       {children}

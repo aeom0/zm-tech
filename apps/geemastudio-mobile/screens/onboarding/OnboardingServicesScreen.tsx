@@ -10,26 +10,13 @@ import {
   GradientCTAButton,
 } from '@/screens/onboarding/components'
 import { Onboarding, Spacing } from '@/constants/theme'
+import { ONBOARDING_CATEGORIES } from '@geemastudio/data'
 import { useTenant } from '@/contexts/TenantContext'
-import { supabase } from '@/lib/supabase'
 
 interface Categoria {
   id: string
   nombre: string
   seleccionada: boolean
-}
-
-const CATEGORIAS_POR_TIPO: Record<string, string[]> = {
-  'spa-nails': ['Uñas', 'Pestañas', 'Cejas y Rostro', 'Depilación'],
-  barbershop: ['Cortes', 'Barba y Bigote', 'Tratamientos', 'Color y Tintura'],
-  'hair-salon': ['Cortes', 'Color', 'Tratamientos', 'Peinados'],
-  'full-aesthetic': [
-    'Tratamientos Faciales',
-    'Tratamientos Corporales',
-    'Uñas',
-    'Cabello',
-    'Depilación',
-  ],
 }
 
 interface OnboardingServicesScreenProps {
@@ -41,10 +28,10 @@ export default function OnboardingServicesScreen({
   onNext,
   onBack,
 }: OnboardingServicesScreenProps) {
-  const { config } = useTenant()
+  const { config, setPendingOnboardingCategories } = useTenant()
 
   const nombresIniciales =
-    CATEGORIAS_POR_TIPO[config.businessType] ?? CATEGORIAS_POR_TIPO['spa-nails']
+    ONBOARDING_CATEGORIES[config.businessType] ?? ONBOARDING_CATEGORIES['spa-nails']
 
   const [categorias, setCategorias] = useState<Categoria[]>(
     nombresIniciales.map((nombre, i) => ({
@@ -53,7 +40,6 @@ export default function OnboardingServicesScreen({
       seleccionada: true,
     }))
   )
-  const [guardando, setGuardando] = useState(false)
 
   const toggleCategoria = (id: string) => {
     setCategorias((prev) =>
@@ -61,37 +47,10 @@ export default function OnboardingServicesScreen({
     )
   }
 
-  const guardar = async () => {
-    const seleccionadas = categorias.filter((c) => c.seleccionada)
-
-    if (seleccionadas.length === 0) {
-      onNext()
-      return
-    }
-
-    setGuardando(true)
-    try {
-      const payload = seleccionadas.map((c, index) => ({
-        name: c.nombre,
-        order: index + 1,
-      }))
-
-      const { error } = await supabase.from('service_categories').insert(payload)
-
-      if (error) {
-        console.warn(
-          '[OnboardingServices] error al crear categorías en Supabase, continuando de todos modos',
-          error
-        )
-      }
-
-      onNext()
-    } catch (error) {
-      console.warn('[OnboardingServices] excepción inesperada al crear categorías', error)
-      onNext()
-    } finally {
-      setGuardando(false)
-    }
+  // Sin sesión todavía: se guardan al cerrar el onboarding (`markConfigured`).
+  const guardar = () => {
+    setPendingOnboardingCategories(categorias.filter((c) => c.seleccionada).map((c) => c.nombre))
+    onNext()
   }
 
   const seleccionadasCount = categorias.filter((c) => c.seleccionada).length
@@ -152,7 +111,6 @@ export default function OnboardingServicesScreen({
           label="Continuar"
           icon="arrow-right"
           onPress={guardar}
-          loading={guardando}
           style={styles.btnFlexWide}
         />
       </Animated.View>

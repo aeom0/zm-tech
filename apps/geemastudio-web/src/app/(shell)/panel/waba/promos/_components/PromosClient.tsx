@@ -6,6 +6,7 @@ import { History, Send } from 'lucide-react'
 import { SegmentedControl } from '@/components/ui/SegmentedControl'
 import { StateNote } from '@/components/ui/StateNote'
 import { useAuth } from '@/contexts/AuthContext'
+import { useOnboardingStatus } from '@/hooks/onboarding/useOnboardingStatus'
 
 import { PromoHistory } from './PromoHistory'
 import { PromoWizard } from './PromoWizard'
@@ -20,6 +21,9 @@ const VIEWS = [
 export function PromosClient() {
   const { isAdmin, isLoading } = useAuth()
   const [view, setView] = useState<View>('nueva')
+  const { data: status } = useOnboardingStatus()
+  // Plan 19 W13: el envío masivo exige correo confirmado (la Edge también lo valida).
+  const emailPending = status != null && status.emailVerifiedAt === null
 
   if (!isLoading && !isAdmin) {
     return <StateNote kind="warning">Solo el dueño del negocio puede enviar promos.</StateNote>
@@ -38,7 +42,15 @@ export function PromosClient() {
         <SegmentedControl options={VIEWS} value={view} onChange={setView} ariaLabel="Vista de promos" />
       </div>
 
-      {view === 'nueva' ? <PromoWizard onShowHistory={() => setView('historial')} /> : <PromoHistory />}
+      {view === 'historial' ? (
+        <PromoHistory />
+      ) : emailPending ? (
+        <StateNote kind="warning">
+          Confirma tu correo para enviar promos. Usa el aviso de arriba para recibir el código.
+        </StateNote>
+      ) : (
+        <PromoWizard onShowHistory={() => setView('historial')} />
+      )}
     </div>
   )
 }

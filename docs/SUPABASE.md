@@ -113,4 +113,15 @@ En `zm-tech` (raíz `.mcp.json` + `.cursor/mcp.json`):
 
 Prefijos de tool en Claude Code: `mcp__ClaudeSupabase__…`, `mcp__SupabaseZMTech__…`, etc. En Cursor: `project-0-…-ClaudeSupabase` / `user-SupabaseZMTech` (prefijo de workspace/user).
 
+## Correo saliente (Resend, `zmtechdev.com`)
+
+Una sola cuenta de Resend (`alberto@zmtechdev.com`) envía el correo de los productos de ZM Tech. Configurado el 15-oct-2026.
+
+- **Dominio:** `zmtechdev.com` verificado en Resend. DNS en Vercel (SPF y DKIM de Resend, DMARC `p=none`). Los MX del dominio siguen en **ImprovMX** (recepción hacia el inbox de Alberto); Resend solo envía.
+- **Remitente:** `no-responder@zmtechdev.com`, con nombre por producto: `ZM Tech` (avisos de la landing) y `GeemaStudio` (Auth de Geema).
+- **Landing** (`llaco…`): API de Resend con `RESEND_API_KEY` en Vercel project `zmtech`; código en `apps/landing/src/lib/email.ts`.
+- **GeemaStudio** (`udelx…`): SMTP propio de Supabase Auth (`smtp.resend.com:465`, usuario `resend`, contraseña = una API key de Resend solo para envío). Lo usan los códigos de 6 dígitos de confirmar correo y de `/recuperar` (Plan 19 W13). Límite de Auth: 30 correos por hora.
+- **Cuota Resend (plan gratis):** 3.000 correos al mes y 100 al día, compartidos entre productos.
+- Una key por uso (landing, SMTP de Geema). Las keys nunca van al chat ni al repo: se pegan directo en Vercel o en el dashboard de Supabase.
+
 Detalle de producto: `docs/landing/`, `docs/geemastudio/`, `docs/odentalpro/`, `docs/repmax/`.

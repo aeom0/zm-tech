@@ -17,7 +17,8 @@
     "./holidays": "./src/holidays/index.ts",
     "./verifications": "./src/verifications/index.ts",
     "./inventory": "./src/inventory/index.ts",
-    "./promos": "./src/promos/index.ts"
+    "./promos": "./src/promos/index.ts",
+    "./onboarding": "./src/onboarding/index.ts"
   },
   "scripts": {
     "build": "tsc --noEmit",

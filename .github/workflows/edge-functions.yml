@@ -79,6 +79,7 @@ jobs:
           - { name: whatsapp-webhook, jwt: false }
           - { name: held-slot-watch, jwt: false }
           - { name: send-promo-whatsapp, jwt: false }
+          - { name: signup-tenant, jwt: false }
           - { name: test-haiku-preview, jwt: true }
           - { name: look-preview, jwt: true }
           - { name: waba-pricing-sync, jwt: true }

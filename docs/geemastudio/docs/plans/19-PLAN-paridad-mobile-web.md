@@ -1,7 +1,7 @@
 # Plan 19 — Paridad Geema mobile ↔ web y código compartido
 
 **Fecha:** 2026-10-13
-**Estado:** Fases 0–3 completadas (W10 el 15-oct-2026). Faltan el smoke manual en `geema.zmtechdev.com`, la Fase 3b (W13 alta de negocio en la web y PWA) y la Fase 4 (mobile)
+**Estado:** Fases 0–3 completadas (W10 el 15-oct-2026). Fase 3b (W13) implementada en la rama `feat/geema-signup-tenant` (15-oct-2026), falta el QA de punta a punta. Faltan el smoke manual en `geema.zmtechdev.com` y la Fase 4 (mobile)
 **Repos afectados:** `zm-tech` (`apps/geemastudio-web`, `apps/geemastudio-mobile`, `packages/geemastudio-data`)
 **Relacionado:** Plan 13 (paridad panel ZM → Geema), Plan 14 (CRM clientes), Plan 15 (retail), Plan 17 (planes y trial), Plan 18 (profesionales)
 
@@ -46,7 +46,7 @@ Catálogo (servicios, categorías, packs, promos), ventas de productos, Personal
 | W10 | Promo masiva por WhatsApp e historial (`send-promo-whatsapp`). Distinta de «Campañas» web, que configura anuncios Meta Ads                                                                                                          | `screens/promos/*`                                                                                                                                                                                           | 3    |
 | W11 | Reordenar servicios                                                                                                                                                                                                                 | `screens/services/components/ReorderServicesModal.tsx`                                                                                                                                                       | 3    |
 | W12 | Dashboard: stock bajo, top servicios, próximas citas                                                                                                                                                                                | `screens/dashboard/components/*`                                                                                                                                                                             | 3    |
-| W13 | Alta de negocio self-service (cuenta del dueño, tenant y trial) y onboarding (rubro, datos y colores, servicios, equipo), más instalación de la PWA. Hoy la app no crea negocios: pide una cuenta que ya tiene tenant | `screens/onboarding/*`, `contexts/TenantContext.tsx` (`markConfigured`), `services/onboardingEmployeesService.ts` | 3b   |
+| W13 | Alta de negocio self-service (cuenta del dueño, tenant y trial) y onboarding (rubro, datos y colores, servicios, equipo), más instalación de la PWA. Hoy la app no crea negocios: pide una cuenta que ya tiene tenant | `screens/onboarding/*`, `contexts/TenantContext.tsx` (`markConfigured`) → `@geemastudio/data/onboarding` | 3b   |
 
 ### Faltan en mobile (última fase)
 
@@ -168,40 +168,46 @@ W13. Un dueño entra a la landing, crea su cuenta y su negocio, configura lo bá
 
 **Base de datos (migración)**
 
-- `tenants.onboarding_completed_at` (null = falta configurar). Backfill con `now()` para los tenants existentes. Reemplaza la marca de AsyncStorage en las dos apps.
-- Marca de correo confirmado del dueño (columna en `tenants` o `profiles`, se define al implementar).
+- Migración `20261016001711_signup_tenant_self_service` (aplicada el 15-oct-2026).
+- «Configurado» es `tenant_settings.is_configured`, que ya existía: el alta lo crea en `false` y el onboarding lo pasa a `true`. Sin fila cuenta como configurado (tenants anteriores). Reemplaza la marca de AsyncStorage como fuente de verdad.
+- `tenants.owner_email_verified_at` (null = correo sin confirmar). Backfill con `created_at` para los tenants existentes.
 - Tabla `signup_attempts` (hash de IP, hash de correo, fecha), solo para `service_role`.
-- RPC `create_tenant_for_owner` (`SECURITY DEFINER`, ejecutable solo por `service_role`): en una transacción crea `tenants` (slug único a partir del nombre), `profiles` (rol `owner`) y `tenant_settings` (preset del rubro y moneda y zona horaria del país).
+- RPC `create_tenant_for_owner` (`SECURITY DEFINER`, ejecutable solo por `service_role`): en una transacción crea `tenants` (slug único a partir del nombre, Pro en trial de 14 días), `profiles` (rol `owner`) y `tenant_settings` con terminología neutra e `is_configured = false`. Rubro, país, moneda y colores los completa el onboarding.
+- RPC `mark_owner_email_verified` (para `authenticated`): fija `owner_email_verified_at` solo si el JWT viene de un OTP (`amr`) y el usuario es el dueño.
 - `get_advisors` de seguridad después de aplicarla.
+- Migración `20261016003716_harden_rpc_grants_self_signup`: con el alta abierta cualquiera tiene un usuario `authenticated`. Quita `EXECUTE` a `anon` y `authenticated` en los locks y debounce del webhook (`waba_*`, sin chequeo de tenant: con la anon key se podía bloquear el bot para un teléfono) y en funciones de trigger. Quita `anon` en las RPC del panel, que validan `is_admin()` y tenant, y fija `search_path` en dos funciones. Quedan a propósito: las vistas públicas `SECURITY DEFINER`, `signup_attempts` sin políticas y `mark_owner_email_verified`. La protección de contraseñas filtradas es de pago (plan Free).
 
 **Edge Function `signup-tenant`**
 
 - Pública (`verify_jwt = false`), con CORS. Va a la matriz de `edge-functions.yml`.
-- Recibe nombre del dueño, correo, contraseña, nombre del negocio, rubro y país. Valida y aplica el límite por IP y por correo.
+- Recibe nombre del dueño, correo, contraseña y nombre del negocio. Valida y aplica el límite (3 altas por IP por hora y 3 por correo por día, con hash en `signup_attempts`).
 - Crea el usuario con `auth.admin.createUser` y llama a `create_tenant_for_owner`. Si la RPC falla, borra el usuario para no dejar cuentas sin tenant.
 - El cliente inicia sesión con correo y contraseña. El JWT ya trae `tenant_id`.
-- El usuario se crea confirmado para Supabase (`email_confirm: true`) para que pueda entrar enseguida. La confirmación del correo es nuestra: `email_verified_at` vacío hasta que el dueño la complete.
+- El usuario se crea confirmado para Supabase (`email_confirm: true`) para que pueda entrar enseguida. La confirmación del correo es nuestra: `owner_email_verified_at` vacío hasta que el dueño la complete.
 
 **Confirmación del correo (código de 6 dígitos)**
 
 - Con un código y no con un enlace: un enlace se abre en el navegador y no en la PWA instalada, y deja dos sesiones.
-- En el panel, el aviso «Confirma tu correo» llama a `signInWithOtp({ email, shouldCreateUser: false })`. El dueño escribe el código ahí y `verifyOtp` lo valida. Una RPC marca `email_verified_at` solo si la sesión viene de un OTP (`amr` del JWT).
-- La plantilla «Magic Link» de Supabase Auth se cambia para mostrar `{{ .Token }}` en vez del enlace. Se hace al implementar.
+- En el panel, el aviso «Confirma tu correo» llama a `signInWithOtp({ email, shouldCreateUser: false })`. El dueño escribe el código ahí y `verifyOtp` lo valida. `mark_owner_email_verified` marca `owner_email_verified_at` solo si la sesión viene de un OTP (`amr` del JWT).
+- Las plantillas «Magic Link» y «Reset Password» de Supabase Auth muestran `{{ .Token }}` en español en vez del enlace. Código de 6 dígitos (antes estaba en 8) que vence en 15 minutos. Configurado por Management API el 15-oct-2026; solo estos dos flujos usan esas plantillas.
 - Envío: SMTP propio de Supabase Auth con Resend (`smtp.resend.com:465`, remitente `GeemaStudio <no-responder@zmtechdev.com>`), configurado el 15-oct-2026. Dominio `zmtechdev.com` verificado en la cuenta de Resend de `alberto@zmtechdev.com` (DNS en Vercel, DMARC `p=none`). Límite de Auth: 30 correos por hora. Resend gratis: 3.000 al mes y 100 al día.
-- El mismo SMTP sirve para «Olvidé mi contraseña», que entra en esta fase.
+- El mismo SMTP sirve para «Olvidé mi contraseña»: `/recuperar` pide el correo, envía un código (`resetPasswordForEmail`) y con el código fija la contraseña nueva (`verifyOtp` tipo `recovery` + `updateUser`).
 
 **Paquete `@geemastudio/data`, dominio `onboarding/`**
 
-- `signupTenant` (llama a la Edge Function), guardado de cada paso (datos y colores, categorías iniciales del rubro, equipo) y `completeOnboarding` (fija `onboarding_completed_at`). Los errores se muestran y no se ignoran.
-- Mobile migra `markConfigured` y `onboardingEmployeesService` al paquete. «Crear nuevo negocio» en la app usa el mismo alta: primero la cuenta y después el wizard.
+- `signupTenant` (llama a la Edge Function), `buildOnboardingConfig`, `insertOnboardingEmployees`, `insertOnboardingServiceCategories` (con `tenant_id` explícito: la columna tiene default `zm-lash-nails` y sin él RLS rechaza la fila en otros tenants), `completeOnboarding` (actualiza `tenant_settings` por `tenant_slug` y fija `is_configured`; falla si no actualizó ninguna fila), `fetchOnboardingStatus`, `sendEmailVerificationCode` y `verifyEmailCode`. Paletas y categorías por rubro en `onboarding/presets.ts`, compartidas con mobile. `auth/passwordResetService.ts` para `/recuperar`. Los errores se muestran y no se ignoran.
+- Mobile: `markConfigured` usa el paquete y ya no oculta errores de RLS. Equipo y categorías se guardan al terminar, con sesión (antes se insertaban sin sesión y fallaban en silencio). «Crear cuenta» del wizard llama a `signupTenant` antes del login. Se borró `services/onboardingEmployeesService.ts`.
 
 **Web**
 
-- `/registro`: alta de cuenta y negocio. Los CTA «Empezar gratis» de la landing llevan aquí.
-- `/onboarding`, fuera de `/panel`: rubro, datos y colores, servicios y equipo, con el progreso guardado en la BD. Un owner con `onboarding_completed_at` null entra aquí al iniciar sesión. Staff nunca lo ve.
-- Pantalla final con «Instalar la app»: `beforeinstallprompt` en Android y escritorio, e instrucciones de «Compartir → Agregar a inicio» en iOS Safari.
+- `/registro`: alta de cuenta y negocio, y login directo. Los CTA «Empezar gratis» de la landing (navbar y planes) llevan aquí. `/login` enlaza a `/registro` y a `/recuperar`.
+- `/onboarding`, fuera de `/panel`: país y rubro, colores, equipo y servicios. El layout del panel manda aquí si `is_configured` es `false`. La web no pide subrubro (la app sí).
+- En el panel, solo para el dueño: aviso «Confirma tu correo» con el código de 6 dígitos y aviso de trial cuando quedan 3 días o menos (o ya venció), con enlace a Plan.
+- Gate de correo: el asistente de promos no se muestra sin correo confirmado, y la Edge `send-promo-whatsapp` responde 403. La conexión de WhatsApp no tiene UI en la web (la configura el equipo ZM), así que el gate aplica solo a promos.
+- La Edge `send-promo-whatsapp` además valida que el broadcast sea del tenant de quien llama (antes un admin podía enviar el de otro tenant).
+- «Instalar la app»: `beforeinstallprompt` en Android y escritorio, e instrucciones de «Compartir → Agregar a inicio» en iOS Safari.
 - Banner de instalación en el panel mientras no esté instalada (`display-mode: standalone`). Se puede descartar y el descarte se recuerda.
-- Manifest con `start_url` en `/panel` para el dueño.
+- Manifest con `start_url` en `/panel` (ya estaba).
 
 **Fuera de alcance**
 

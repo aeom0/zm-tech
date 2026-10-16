@@ -58,7 +58,7 @@ src/
 | `SUPABASE_SERVICE_ROLE_KEY` | Contact + leads                          |
 | `RESEND_API_KEY`            | Envío de avisos (formulario/propuesta)   |
 
-Inbox `alberto@zmtechdev.com` llega por **ImprovMX** (MX del dominio). No hace falta `CONTACT_EMAIL`. Resend solo **envía**; el sandbox sigue como `from` hasta verificar el dominio en Resend.
+Inbox `alberto@zmtechdev.com` llega por **ImprovMX** (MX del dominio). No hace falta `CONTACT_EMAIL`. Resend solo **envía**, desde `ZM Tech <no-responder@zmtechdev.com>` (`REMITENTE_RESEND` en `src/lib/email.ts`). El dominio está verificado en Resend; el detalle compartido está en [docs/SUPABASE.md § Correo saliente](../SUPABASE.md#correo-saliente-resend-zmtechdevcom).
 
 ## Comandos
 

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import Link from 'next/link'
 import { Eye, EyeOff, KeyRound, Mail } from 'lucide-react'
 
 import { supabase } from '@/lib/supabase'
@@ -154,9 +155,19 @@ export default function LoginPage() {
               </button>
             </form>
 
-            <p className="mt-6 text-center text-xs text-zinc-500">
-              ¿No tienes acceso? Contacta a soporte de GeemaStudio.
-            </p>
+            <div className="mt-6 space-y-2 text-center text-sm text-zinc-400">
+              <p>
+                <Link href="/recuperar" className="hover:text-white hover:underline">
+                  ¿Olvidaste tu contraseña?
+                </Link>
+              </p>
+              <p>
+                ¿Aún no tienes cuenta?{' '}
+                <Link href="/registro" className="font-semibold text-[#40E0D0] hover:underline">
+                  Crea tu negocio gratis
+                </Link>
+              </p>
+            </div>
           </div>
         </main>
       </div>
