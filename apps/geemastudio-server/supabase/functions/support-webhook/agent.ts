@@ -99,7 +99,9 @@ export const SUPPORT_TOOLS: AgentToolDef[] = [
 export function buildSystem(opts: {
   hours: SupportHoursStatus;
   contactName: string | null;
+  openTickets?: { id: number; categoria: string | null; summary: string }[];
 }): AgentSystemBlock[] {
+  const tickets = opts.openTickets ?? [];
   const context = [
     `Hora actual en Venezuela: ${opts.hours.localTime}.`,
     opts.hours.open
@@ -107,6 +109,15 @@ export function buildSystem(opts: {
       : "El equipo humano está fuera de horario (atiende de 8:00 a 20:00, hora de Venezuela).",
     opts.contactName
       ? `Nombre de perfil de WhatsApp de quien escribe: ${opts.contactName} (puede no ser su nombre real).`
+      : "",
+    tickets.length > 0
+      ? [
+        "Casos abiertos de este teléfono (ya registrados y confirmados; el equipo los tiene):",
+        ...tickets.map((t) =>
+          `- #${t.id} (${t.categoria ?? "otro"}): ${t.summary.slice(0, 300)}`
+        ),
+        "No los vuelvas a registrar ni los menciones si la persona no pregunta por ellos. Si agrega datos de un caso, usa escalar_a_humano con la misma categoría: actualiza ese caso.",
+      ].join("\n")
       : "",
   ].filter(Boolean).join("\n");
   return [

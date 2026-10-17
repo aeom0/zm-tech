@@ -4,7 +4,7 @@ import * as guiaEdge from "../_shared/guia-ayuda.ts";
 import * as guiaFuente from "../../../../../packages/shared-schema/src/utils/guia-ayuda.ts";
 import { buildSystem, formatGuia, runSupportAgent } from "./agent.ts";
 import { humanReplyNotice, supportHoursStatus } from "./hours.ts";
-import { historyToMessages } from "./store.ts";
+import { historyToMessages, pickTicketToReuse } from "./store.ts";
 
 Deno.test("la guía de la Edge Function es idéntica a la de @geemastudio/shared-schema", () => {
   // Si falla: cp packages/shared-schema/src/utils/guia-ayuda.ts \
@@ -63,6 +63,37 @@ Deno.test("buildSystem pasa el horario calculado por código", () => {
   assertEquals(sys[0].cache_control?.type, "ephemeral");
   assertStringIncludes(sys[1].text, "fuera de horario");
   assertStringIncludes(sys[1].text, "21:10");
+  assertEquals(sys[1].text.includes("Casos abiertos"), false);
+});
+
+Deno.test("buildSystem muestra los casos abiertos para no duplicarlos", () => {
+  const sys = buildSystem({
+    hours: { open: true, localTime: "10:00" },
+    contactName: null,
+    openTickets: [{ id: 1, categoria: "cobro", summary: "Cobro doble" }],
+  });
+  assertStringIncludes(sys[1].text, "#1 (cobro): Cobro doble");
+  assertStringIncludes(sys[1].text, "No los vuelvas a registrar");
+});
+
+Deno.test("pickTicketToReuse: misma categoría o ráfaga de 30 minutos", () => {
+  const now = Date.parse("2026-10-17T05:00:00Z");
+  const cobro = {
+    id: 1,
+    categoria: "cobro",
+    summary: "",
+    created_at: "2026-10-16T03:00:00Z",
+  };
+  const reciente = {
+    id: 2,
+    categoria: "error",
+    summary: "",
+    created_at: "2026-10-17T04:45:00Z",
+  };
+  assertEquals(pickTicketToReuse([reciente, cobro], "cobro", now)?.id, 1);
+  assertEquals(pickTicketToReuse([reciente, cobro], "cuenta", now)?.id, 2);
+  assertEquals(pickTicketToReuse([reciente, cobro], null, now)?.id, 2);
+  assertEquals(pickTicketToReuse([cobro], "cuenta", now), null);
 });
 
 function apiResult(

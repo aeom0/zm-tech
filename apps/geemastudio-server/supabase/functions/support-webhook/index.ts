@@ -27,6 +27,7 @@ import {
   historyToMessages,
   insertInbound,
   loadHistory,
+  loadOpenTickets,
   logOutbound,
   upsertTicket,
 } from "./store.ts";
@@ -126,14 +127,18 @@ async function replyToTurn(
       contactName,
       enHorario: hours.open,
     });
-    return `Caso #${ticket.id} registrado. Aviso para el usuario: ${
-      humanReplyNotice(hours)
-    }`;
+    return `Caso #${ticket.id} ${
+      ticket.reused ? "actualizado" : "registrado"
+    }. Aviso para el usuario: ${humanReplyNotice(hours)}`;
   };
 
   let result = null;
   if (apiKey) {
-    const system = buildSystem({ hours, contactName });
+    const system = buildSystem({
+      hours,
+      contactName,
+      openTickets: await loadOpenTickets(supabase, phone),
+    });
     for (let attempt = 1; attempt <= AGENT_ATTEMPTS && !result; attempt++) {
       result = await runSupportAgent({
         system,

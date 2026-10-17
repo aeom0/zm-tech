@@ -106,6 +106,14 @@ export const GUIA_AYUDA: GuiaItem[] = [
 
   // Clientes
   {
+    id: 'agregar-cliente',
+    category: 'clientes',
+    question: '¿Cómo agrego un cliente nuevo?',
+    answer:
+      'En el panel web, entra a Clientes y pulsa «Nuevo cliente». En la app, entra a Clientes y pulsa el botón «+». Solo el nombre es obligatorio; también puedes guardar teléfono, documento, correo y notas (alergias, preferencias).',
+    link: { href: '/panel/clientes', label: 'Ir a Clientes' },
+  },
+  {
     id: 'segmentos-clientes',
     category: 'clientes',
     question: '¿Qué significan los segmentos VIP, Nuevas y En riesgo?',

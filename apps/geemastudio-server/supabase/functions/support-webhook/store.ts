@@ -13,6 +13,8 @@ const HISTORY_LIMIT = 30;
 const HISTORY_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 /** Un escalamiento repetido en esta ventana actualiza el ticket abierto. */
 const TICKET_DEDUPE_MS = 30 * 60 * 1000;
+/** Casos abiertos que el agente ve (y que un escalamiento de la misma categoría actualiza). */
+const OPEN_TICKET_MAX_AGE_MS = HISTORY_MAX_AGE_MS;
 
 export function getSupportSupabase(): SupabaseClient {
   return createClient(
@@ -147,9 +149,63 @@ export async function countRecentReplies(
   return count ?? 0;
 }
 
+export interface OpenTicket {
+  id: number;
+  categoria: string | null;
+  summary: string;
+  created_at: string;
+}
+
+/** Tickets sin resolver del teléfono en los últimos 7 días, el más reciente primero. */
+export async function loadOpenTickets(
+  supabase: SupabaseClient,
+  phone: string,
+): Promise<OpenTicket[]> {
+  const since = new Date(Date.now() - OPEN_TICKET_MAX_AGE_MS).toISOString();
+  const { data, error } = await supabase
+    .from("support_tickets")
+    .select("id, summary, diagnosis, created_at")
+    .eq("product", SUPPORT_PRODUCT)
+    .eq("contact_phone", phone)
+    .neq("status", "resolved")
+    .gte("created_at", since)
+    .order("created_at", { ascending: false })
+    .limit(5);
+  if (error) {
+    console.warn("[SUPPORT] loadOpenTickets:", error.message);
+    return [];
+  }
+  return (data ?? []).map((t) => ({
+    id: Number(t.id),
+    categoria: typeof t.diagnosis?.categoria === "string"
+      ? t.diagnosis.categoria
+      : null,
+    summary: String(t.summary ?? ""),
+    created_at: String(t.created_at),
+  }));
+}
+
 /**
- * Crea el ticket o, si el mismo teléfono escaló hace poco y sigue abierto,
- * actualiza ese (evita duplicados por ráfagas o reintentos).
+ * Ticket abierto que absorbe un escalamiento nuevo: el de la misma categoría
+ * o, sin coincidencia, uno creado en los últimos 30 minutos (ráfagas).
+ */
+export function pickTicketToReuse(
+  open: OpenTicket[],
+  categoria: string | null,
+  now = Date.now(),
+): OpenTicket | null {
+  if (categoria) {
+    const same = open.find((t) => t.categoria === categoria);
+    if (same) return same;
+  }
+  return open.find((t) =>
+    now - new Date(t.created_at).getTime() < TICKET_DEDUPE_MS
+  ) ?? null;
+}
+
+/**
+ * Crea el ticket o actualiza el abierto que corresponda (pickTicketToReuse),
+ * para no duplicar casos por ráfagas, reintentos o el mismo tema otro día.
  */
 export async function upsertTicket(
   supabase: SupabaseClient,
@@ -160,17 +216,13 @@ export async function upsertTicket(
     diagnosis: Record<string, unknown>;
   },
 ): Promise<{ id: number; reused: boolean }> {
-  const since = new Date(Date.now() - TICKET_DEDUPE_MS).toISOString();
-  const { data: open } = await supabase
-    .from("support_tickets")
-    .select("id")
-    .eq("product", SUPPORT_PRODUCT)
-    .eq("contact_phone", opts.phone)
-    .neq("status", "resolved")
-    .gte("created_at", since)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+  const categoria = typeof opts.diagnosis.categoria === "string"
+    ? opts.diagnosis.categoria
+    : null;
+  const open = pickTicketToReuse(
+    await loadOpenTickets(supabase, opts.phone),
+    categoria,
+  );
   if (open) {
     const { error } = await supabase
       .from("support_tickets")
