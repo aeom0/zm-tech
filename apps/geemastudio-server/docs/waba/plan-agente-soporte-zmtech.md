@@ -230,8 +230,8 @@ Bloqueado por Alberto:
 4. Humo de F1 hecho el 16-oct-2026 desde el teléfono de Alberto: saludo respondido y
    escalamiento con caso #1 y aviso en Telegram. Falta la QA completa con los teléfonos
    `51999000978`–`999` y los casos de la sección QA.
-5. `SUPPORT_WA_ACCESS_TOKEN` es el token temporal del panel (vence en ~24 h): cambiarlo por
-   el de un usuario del sistema del portafolio ZM Tech, no el de ZM Lash.
+5. ~~Token permanente~~ (hecho el 17-oct-2026): `SUPPORT_WA_ACCESS_TOKEN` es del usuario del
+   sistema `soporte-geemastudio` del portafolio ZM Tech (no vence; app y WABA asignadas).
 6. Número real (producción) y verificación del negocio en el portafolio ZM Tech.
 7. Alias `soporte@zmtechdev.com` en ImprovMX verificado (Meta pide verificar ese correo
    como contacto de la app).
