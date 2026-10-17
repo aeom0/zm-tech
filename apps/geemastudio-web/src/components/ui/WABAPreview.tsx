@@ -48,7 +48,7 @@ export function WABAPreview() {
           SP
         </div>
         <div>
-          <p className="text-sm font-semibold leading-none text-white">GeemaStudio Bot</p>
+          <p className="text-sm font-semibold leading-none text-white">Asistente Geema</p>
           <p className="mt-0.5 text-xs text-[#8696A0]">en línea</p>
         </div>
       </div>

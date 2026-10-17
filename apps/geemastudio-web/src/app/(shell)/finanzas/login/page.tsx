@@ -127,7 +127,7 @@ function LoginForm() {
           </form>
 
           <p className="mt-6 text-center text-xs text-zinc-500 dark:text-zinc-500">
-            Misma cuenta que la app móvil (Supabase Auth).
+            Misma cuenta que la app móvil.
           </p>
         </div>
       </main>

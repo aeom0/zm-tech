@@ -107,7 +107,7 @@ export function AuthProvider({
         return {
           ok: false,
           error:
-            'Configuración de Supabase faltante. Añade NEXT_PUBLIC_SUPABASE_* en apps/web/.env.local',
+            'No se pudo conectar. Revisa la configuración del sitio e intenta de nuevo.',
         }
       }
       const trimmedEmail = email.trim()

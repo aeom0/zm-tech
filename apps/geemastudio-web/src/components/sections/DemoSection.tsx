@@ -31,7 +31,7 @@ const DEMO_TABS: {
       'Vista diaria por profesional. Toca para ver detalles, arrastra para reprogramar. Sin conflictos, sin doble-reservas.',
     accent: LUNARIS.primary,
     stats: [
-      { value: '−40%', label: 'Ausencias con recordatorio push' },
+      { value: '−40%', label: 'Ausencias con recordatorio en el celular' },
       { value: '3x', label: 'Más rápido que un cuaderno' },
     ],
   },

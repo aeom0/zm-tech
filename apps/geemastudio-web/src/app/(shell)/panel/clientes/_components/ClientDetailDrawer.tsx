@@ -101,7 +101,7 @@ export function ClientDetailDrawer({
               href={`/panel/waba/mensajes?phone=${encodeURIComponent(waPhone)}`}
               className="ml-auto inline-flex items-center gap-1.5 text-xs font-medium text-tenant-text hover:underline"
             >
-              Bandeja WABA
+              WhatsApp
             </Link>
           )}
         </div>

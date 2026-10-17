@@ -34,7 +34,7 @@ export const FEATURES = [
   },
   {
     icon: 'Bell',
-    title: 'Notificaciones Push',
+    title: 'Avisos en el celular',
     description: 'Recordatorios automáticos a clientes. Reduce las ausencias hasta un 40%.',
   },
   {
@@ -99,7 +99,7 @@ export const PLANS: Plan[] = [
       'Agenda de citas',
       'Catálogo de servicios',
       'App móvil (iOS + Android)',
-      'Soporte por email',
+      'Soporte por correo',
     ],
     wabaFeatures: [
       'WhatsApp 24/7 con asistente IA',
@@ -120,14 +120,14 @@ export const PLANS: Plan[] = [
       'Todo lo de Basic',
       'Control de inventario',
       'Finanzas y reportes',
-      'Notificaciones push a clientes',
+      'Avisos en el celular para clientes',
       'Comisiones automáticas',
       'Soporte prioritario',
     ],
     wabaFeatures: [
       'WhatsApp 24/7 con asistente IA',
       '1.000 mensajes de servicio/mes incluidos',
-      'Envío de promos masivas por WA',
+      'Envío de promos masivas por WhatsApp',
     ],
     wabaConversations: 1000,
     highlighted: true,
@@ -143,16 +143,16 @@ export const PLANS: Plan[] = [
       'Empleados ilimitados',
       'Todo lo de Pro',
       'Reportes avanzados',
-      'Branding personalizado',
-      'Integraciones API',
-      'Manager dedicado',
-      'SLA garantizado',
+      'Marca personalizada',
+      'Conexión con otras herramientas',
+      'Asesor dedicado',
+      'Tiempos de respuesta acordados',
     ],
     wabaFeatures: [
       'WhatsApp 24/7 con asistente IA avanzada',
       'Mensajes de servicio ilimitados',
-      'Flujo de pago por captura WA',
-      'Foto previa al servicio por WA',
+      'El cliente envía el comprobante por WhatsApp',
+      'Foto de referencia antes del servicio',
     ],
     wabaConversations: 'unlimited',
     highlighted: false,
@@ -171,7 +171,7 @@ export const FAQS = [
   {
     question: '¿Necesito conocimientos técnicos para configurarlo?',
     answer:
-      'No. GeemaStudio está diseñado para que cualquier propietario de negocio lo configure en menos de 10 minutos. El onboarding te guía paso a paso: tipo de negocio, servicios, equipo y listo.',
+      'No. GeemaStudio está diseñado para que cualquier dueño de negocio lo configure en menos de 10 minutos. La guía inicial te lleva paso a paso: tipo de negocio, servicios, equipo y listo.',
   },
   {
     question: '¿Funciona en iOS y Android?',
@@ -186,7 +186,7 @@ export const FAQS = [
   {
     question: '¿Mis datos están seguros?',
     answer:
-      'Sí. Usamos Supabase con cifrado en reposo y en tránsito. Cada negocio tiene su propia base de datos aislada. Cumplimos con estándares de seguridad de nivel empresarial.',
+      'Sí. Tus datos van cifrados, tanto guardados como mientras viajan. Cada negocio queda separado de los demás.',
   },
   {
     question: '¿Hay contrato de permanencia?',
@@ -196,12 +196,12 @@ export const FAQS = [
   {
     question: '¿Cómo es el soporte?',
     answer:
-      'Todos los planes incluyen soporte por email con respuesta en menos de 24 horas. El plan Pro tiene soporte prioritario (menos de 4 horas). Elite incluye un manager dedicado con WhatsApp directo.',
+      'Todos los planes incluyen soporte por correo con respuesta en menos de 24 horas. El plan Pro tiene soporte prioritario (menos de 4 horas). Elite incluye un asesor dedicado por WhatsApp.',
   },
   {
-    question: '¿Necesito WhatsApp Business API para usar el bot?',
+    question: '¿Necesito un WhatsApp especial para el asistente?',
     answer:
-      'Sí. El bot funciona con WhatsApp Business API (WABA) de Meta — diferente a la app WhatsApp Business normal. Desde GeemaStudio te guiamos paso a paso para conectar tu número. El proceso toma menos de 15 minutos y Meta lo aprueba en 1-2 días hábiles.',
+      'Sí. El asistente usa el WhatsApp oficial de Meta, distinto de la app WhatsApp Business común. Desde GeemaStudio te guiamos para conectar tu número. El proceso toma menos de 15 minutos y Meta lo aprueba en 1 o 2 días hábiles.',
   },
   {
     question: '¿Qué pasa cuando se agotan los mensajes de servicio del mes?',
@@ -224,13 +224,13 @@ export const COMPARISON_FEATURES: {
   { label: 'Gestión de clientes', basic: true, pro: true, elite: true },
   { label: 'Control de inventario', basic: false, pro: true, elite: true },
   { label: 'Finanzas y reportes', basic: false, pro: true, elite: true },
-  { label: 'Notificaciones push', basic: false, pro: true, elite: true },
+  { label: 'Avisos en el celular', basic: false, pro: true, elite: true },
   { label: 'Comisiones automáticas', basic: false, pro: true, elite: true },
   { label: 'Múltiples sedes', basic: false, pro: true, elite: true },
   { label: 'Reportes avanzados', basic: false, pro: false, elite: true },
-  { label: 'Branding personalizado', basic: false, pro: false, elite: true },
-  { label: 'API + Integraciones', basic: false, pro: false, elite: true },
-  { label: 'Manager dedicado', basic: false, pro: false, elite: true },
+  { label: 'Marca personalizada', basic: false, pro: false, elite: true },
+  { label: 'Conexión con otras herramientas', basic: false, pro: false, elite: true },
+  { label: 'Asesor dedicado', basic: false, pro: false, elite: true },
   {
     label: 'WhatsApp y asistente IA 24/7',
     basic: true,
@@ -251,7 +251,7 @@ export const COMPARISON_FEATURES: {
     elite: false,
   },
   {
-    label: 'IA (Claude) para preguntas libres',
+    label: 'Asistente para preguntas libres',
     basic: true,
     pro: true,
     elite: true,

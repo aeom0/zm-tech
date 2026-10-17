@@ -126,8 +126,7 @@ export function PricingSection({ plans }: { plans: Plan[] }) {
             {showAddon && (
               <div className="px-6 pb-6">
                 <p className="mb-4 text-sm text-zinc-500 dark:text-zinc-400">
-                  Packs adicionales disponibles en todos los planes cuando se agota el bundle
-                  mensual.
+                  Packs adicionales en todos los planes, cuando se agota el cupo del mes.
                 </p>
                 <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
                   {WABA_ADDON_TIERS.map((tier) => (

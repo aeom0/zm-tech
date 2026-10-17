@@ -50,9 +50,9 @@ export function FeaturesSection() {
                   Tu salón agenda solo, <span className="text-[#25D366]">24/7</span>, por WhatsApp
                 </h3>
                 <p className="mx-auto max-w-md text-sm leading-relaxed text-zinc-400 md:mx-0">
-                  Los clientes agendan, preguntan y reciben confirmación directo en WhatsApp. Con IA
-                  integrada (Claude) para responder preguntas libres sobre servicios y
-                  disponibilidad. Sin que el propietario tenga que contestar a las 2:00.
+                  Los clientes agendan, preguntan y reciben confirmación directo en WhatsApp. El
+                  asistente responde preguntas libres sobre servicios y disponibilidad, sin que
+                  tengas que contestar a las 2:00.
                 </p>
                 <div className="mt-5 flex flex-wrap justify-center gap-3 md:justify-start">
                   {['Todos los planes', 'Sin programación', 'IA incluida'].map((label) => (

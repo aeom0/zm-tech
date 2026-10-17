@@ -28,7 +28,7 @@ export default function LoginPage() {
 
     if (!supabase) {
       setError(
-        'Configuración de Supabase faltante. Revisa NEXT_PUBLIC_SUPABASE_* en apps/web/.env.local'
+        'No se pudo conectar. Revisa la configuración del sitio e intenta de nuevo.'
       )
       return
     }

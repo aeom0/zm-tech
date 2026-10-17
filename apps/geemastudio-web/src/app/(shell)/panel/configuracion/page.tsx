@@ -484,7 +484,7 @@ export default function PanelConfiguracionPage() {
         title="Presencia web"
         subtitle={
           <>
-            Controla landing pública. Contenido (galería, equipo, promos, reseñas…) se edita en{' '}
+            Controla tu página pública. El contenido (galería, equipo, promos, reseñas) se edita en{' '}
             <Link href="/panel/configuracion/web" className="text-tenant-text hover:underline">
               Mi Web
             </Link>
@@ -496,7 +496,7 @@ export default function PanelConfiguracionPage() {
           {(
             [
               { id: 'none' as const, label: 'Sin página web' },
-              { id: 'geema_hosted' as const, label: 'Geema (geema.zmtechdev.com/s/…)' },
+              { id: 'geema_hosted' as const, label: 'Página en Geema' },
               { id: 'own_domain' as const, label: 'Dominio propio' },
             ] as const
           ).map((opt) => (

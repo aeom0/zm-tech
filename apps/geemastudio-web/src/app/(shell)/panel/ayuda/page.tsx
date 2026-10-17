@@ -36,7 +36,7 @@ const FAQS: FaqItem[] = [
     category: 'agenda',
     question: '¿Cómo cancelo una cita y qué ocurre con el registro?',
     answer:
-      'Al abrir el detalle de una cita, puedes pulsar "Cancelar cita". Se te solicitará un motivo y una observación opcional. La cita no se borra de la base de datos: queda registrada con estado cancelada para mantener el historial y las métricas intactas.',
+      'Al abrir el detalle de una cita, puedes pulsar «Cancelar cita». Se te pide un motivo y una observación opcional. La cita no se borra: queda cancelada para conservar el historial y las métricas.',
     link: { href: '/panel/agenda', label: 'Ver Agenda' },
   },
   {
@@ -44,7 +44,7 @@ const FAQS: FaqItem[] = [
     category: 'agenda',
     question: '¿Cuáles son los estados de una cita?',
     answer:
-      'Una cita puede estar agendada (scheduled), confirmada (payment_submitted/confirmed), completada (completed), no asistió (no_show) o cancelada (cancelled). Cada estado actualiza automáticamente los indicadores del día.',
+      'Una cita puede estar agendada, confirmada, completada, no asistió o cancelada. Cada estado actualiza los indicadores del día.',
   },
 
   // WhatsApp y asistente WABA
@@ -136,7 +136,7 @@ const FAQS: FaqItem[] = [
     category: 'configuracion',
     question: '¿Cómo activo mi página web pública para que las clientas vean los servicios?',
     answer:
-      'En Configuración → Presencia web activa la opción "Geema", elige la dirección de tu página (por ejemplo "mi-salon") y guarda los cambios. Tu catálogo estará disponible en geema.zmtechdev.com/s/mi-salon.',
+      'En Configuración → Presencia web elige «Página en Geema», escribe la dirección de tu página (por ejemplo «mi-salon») y guarda. La vista previa te muestra el enlace para tus clientas.',
     link: { href: '/panel/configuracion', label: 'Configurar Web' },
   },
 ]
