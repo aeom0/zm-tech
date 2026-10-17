@@ -222,7 +222,8 @@ Telegram.
 Bloqueado por Alberto:
 1. App en Meta for Developers con WhatsApp y los secrets `SUPPORT_WA_*` y
    `SUPPORT_META_APP_SECRET`; webhook apuntando a `support-webhook`, campo `messages`.
-2. Bot de Telegram y sus dos secrets (pasos en «Escalamiento»).
+2. ~~Bot de Telegram y sus dos secrets~~ (hecho el 16-oct-2026: `@GeemaStudio_bot`,
+   secrets en `udelx…`, envío de prueba recibido).
 3. Mergear el PR #92 de F1. El merge despliega todas las Edge Functions.
 4. QA de F1 con el número de prueba y los teléfonos `51999000978`–`999`, con los casos de
    la sección QA.
