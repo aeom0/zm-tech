@@ -33,7 +33,6 @@ El estado vigente de funciones (`search_path`), índices de FK y políticas RLS 
 
 **Avisos del Advisor aceptados a propósito** (revisados el 16-oct-2026; no «arreglarlos»):
 
-- `security_definer_view` en `tenant_brand_public` y `tenant_landing_public`: exponen solo columnas públicas de `tenant_settings` a `anon` sin abrir la tabla (ver «Privilegios de `anon`» en `docs/geemastudio/AGENTS.md`).
 - `authenticated_security_definer_function_executable` en `adjust_inventory_quantity`, `mark_owner_email_verified`, `mark_product_order_paid`, `save_employee_services` y `save_employee_work_hours`: las llama el panel y cada una valida `is_admin()` y `current_tenant_id()`.
 - `rls_enabled_no_policy` en `signup_attempts`: solo la usa `signup-tenant` con service role.
 - `auth_leaked_password_protection`: requiere plan Pro; activarlo al subir de plan.

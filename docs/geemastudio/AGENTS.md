@@ -145,7 +145,7 @@ RLS en Supabase (mobile ya migrado 100% a estas tablas): profiles (lectura propi
 
 Supabase concede `ALL` a `anon` y `authenticated` sobre todo objeto nuevo de `public`. La migración `20261002120954_revoke_anon_table_grants` quitó esos grants a `anon` y dejó los default privileges sin `anon`. Reglas:
 
-- Vistas públicas (`tenant_brand_public`, `tenant_landing_public`): `REVOKE ALL ... FROM anon, authenticated` y luego `GRANT SELECT`. Una vista simple con `security_invoker = false` es auto-actualizable y escribe como `postgres`, saltándose RLS.
+- Vistas públicas (`tenant_brand_public`, `tenant_landing_public`): `security_invoker = true` y leen `private.tenant_*_public_rows()` (`20261016153914`). `REVOKE ALL` y luego `GRANT SELECT`. No volver a definirlas como vista simple sobre `tenant_settings`: con `security_invoker = false` son auto-actualizables y escriben como `postgres`.
 - `tenant_settings`: `anon` solo lee columnas de contenido web (GRANT por columna). No agregar columnas sensibles a ese GRANT.
 - Tras cada migración sobre `public`, `role_table_grants` de `anon` solo debe listar `SELECT` de las vistas públicas.
 - RPC nuevas: Supabase da `EXECUTE` a `anon` y `authenticated`. Desde el alta self-service (Plan 19 W13) cualquiera puede tener un usuario `authenticated`. Una función `SECURITY DEFINER` debe validar rol y `current_tenant_id()` o hacer `REVOKE EXECUTE ... FROM PUBLIC, anon, authenticated` si solo la usan Edge Functions o pg_cron (ver `20261016003716_harden_rpc_grants_self_signup`).
