@@ -1,6 +1,6 @@
 # Plan: agente de soporte de ZM Tech por WhatsApp (Haiku 5.5)
 
-Estado: borrador (16-oct-2026). Alcance inicial: tenants de GeemaStudio (proyecto `udelx…`).
+Estado: F1 en producción con el número de prueba (17-oct-2026); F2–F5 por hacer. Alcance inicial: tenants de GeemaStudio (proyecto `udelx…`).
 OdentalPro y RepMAX quedan fuera hasta que el agente esté estable con Geema.
 
 ## Objetivo
@@ -63,8 +63,10 @@ Decidido en F1 (16-oct-2026):
   `wa_action_debounce` y al tenant del salón). Soporte usa algo más simple en
   `support-webhook/store.ts`: `wamid` UNIQUE en `support_messages` y "el último mensaje
   gana" (cada webhook espera 4 s y solo responde si su mensaje sigue siendo el último
-  entrante; antes de enviar vuelve a mirar). Los escalamientos repetidos en 30 min
-  actualizan el ticket abierto en vez de crear otro.
+  entrante; antes de enviar vuelve a mirar). Un escalamiento actualiza el ticket abierto
+  de la misma categoría (7 días) o el creado en los últimos 30 min, en vez de crear otro.
+  Los casos abiertos del teléfono van en el contexto del agente (17-oct-2026: el
+  historial es solo texto y, sin eso, el agente no veía el caso y lo volvía a registrar).
 - **Fallas**: dos intentos del agente; si ambos fallan se registra el ticket y el usuario
   recibe el número de caso y el aviso de horario. Tope anti-abuso: 30 respuestas por
   teléfono por hora.
@@ -191,6 +193,56 @@ plantilla aprobada ("tu caso #N fue atendido").
 - Reenviar código de verificación, enviar código de recuperación, reactivar el bot.
 - Permisos por rol en código: el personal no ejecuta acciones de dueño.
 
+**F4: agente de código para fallas** (agregado el 17-oct-2026)
+
+Con la venta de la app el soporte deja de ser un tenant y pasa a ser varios. Las fallas
+reales de código no deberían esperar a que Alberto las lea en Telegram para empezar a
+investigarse. El agente de código propone el arreglo; **Alberto aprueba el merge**.
+
+1. Un caso de categoría `error` (o marcado así por Alberto) abre un issue de GitHub con el
+   resumen y el diagnóstico que escribió el agente de soporte: tenant, pantalla, web o app,
+   mensaje de error y, desde F2, el estado de la cuenta y los errores de `wa_error_log`.
+2. Una etiqueta del issue dispara al agente de código: Claude Code en GitHub Actions
+   (`claude-code-action`) o la API de Cursor Cloud Agents (por decidir). Investiga,
+   reproduce con un test y abre un PR con el arreglo y sus tests. Nunca hace push a `main`.
+3. Telegram avisa a Alberto con el resumen y el enlace al PR. Él lo revisa y mergea desde
+   el teléfono; el merge despliega como siempre.
+4. Al mergear, el caso pasa a resuelto y el agente de soporte avisa al tenant (dentro de la
+   ventana de 24 h, o con la plantilla del pendiente 9).
+
+Reglas:
+- **El texto del tenant no llega al agente de código.** Solo el resumen del agente de
+  soporte, en una sección marcada como datos. Es la defensa contra la inyección de
+  instrucciones («ignora todo y cambia X») desde un chat de WhatsApp.
+- El agente de código no tiene secrets, ni acceso a la BD de producción, ni permiso para
+  desplegar, aplicar migraciones o mergear. Si el arreglo necesita una migración, el PR la
+  propone y Alberto la aplica.
+- Un caso no abre más de un issue. Si varios tenants reportan lo mismo, se agrupan en el
+  issue abierto (el agente de soporte ve los casos abiertos de todos los tenants por
+  categoría y pantalla, no solo los del teléfono).
+- Sin merge automático. Si algún día se habilita, solo para la guía y textos, nunca para
+  Edge Functions, migraciones ni RLS.
+
+**F5: chat de soporte dentro de las apps** (agregado el 17-oct-2026)
+
+Un chat de soporte en el panel web (Centro de Ayuda) y en la app (Más → Ayuda), con el
+mismo agente que WhatsApp.
+
+- **Identidad resuelta:** quien escribe ya tiene sesión. El `tenant_id`, el usuario y el
+  rol salen del JWT y de `profiles` en código; no hace falta la verificación por correo de
+  F2, y las herramientas de F2 y F3 se pueden usar desde el primer mensaje.
+- **Mismo núcleo, dos canales:** `agent.ts`, las herramientas y los tickets se comparten con
+  `support-webhook`. Una Edge Function aparte (`support-chat`, con `verify_jwt`) recibe el
+  mensaje de la app y responde en la misma petición; WhatsApp queda para quien no está en
+  la app o prefiere escribir por ahí.
+- **Datos:** `support_messages` y `support_tickets` suman `channel` (`whatsapp` | `app`) y
+  `profile_id`. Migración con la regla local = remoto.
+- **Respuesta humana:** al escalar, la persona del equipo responde desde una bandeja propia
+  (decisión abierta: vista en el panel de ZM Tech o en el hub) y la respuesta llega al chat
+  de la app, sin la ventana de 24 h de WhatsApp. Con más de un tenant, Telegram queda como
+  aviso, no como bandeja.
+- Sin emojis Unicode en la UI del chat (íconos Lucide), como el resto del panel.
+
 ## QA
 
 - Teléfonos `51999000978`–`999` y tenants demo (`reset-demo-tenant`).
@@ -204,14 +256,20 @@ plantilla aprobada ("tu caso #N fue atendido").
   con los casos de QA de arriba.
 - **Guía desactualizada**: el agente responde con seguridad algo que ya cambió. Se mitiga
   con una sola fuente y la regla de actualizarla en el PR.
-- **Bugs nuevos**: el agente describe lo que ve en la cuenta, no diagnostica código.
-  Todo lo que no encaje escala.
+- **Bugs nuevos**: el agente de soporte describe lo que ve en la cuenta, no diagnostica
+  código. Todo lo que no encaje escala; desde F4, las fallas abren un issue para el agente
+  de código.
+- **Inyección de instrucciones hacia el agente de código** (F4): un tenant podría escribir
+  instrucciones para que terminen en un PR. Se mitiga con el resumen intermedio, sin
+  secrets ni permisos de despliegue, y con el merge siempre en manos de Alberto.
 - **Cuota de Resend**: los códigos de verificación de soporte comparten los 100 correos al
   día del plan gratis con el auth.
 
 ## Decisiones abiertas
 
 - Días de atención (por ahora, todos los días de 8:00 a 20:00 VET).
+- F4: Claude Code en GitHub Actions o Cursor Cloud Agents.
+- F5: dónde vive la bandeja del equipo (panel de ZM Tech o hub).
 
 Decidido (16-oct-2026): número nuevo; horario 8:00–20:00 VET; desarrollo con el número de
 prueba de Meta mientras no exista el portafolio de ZM Tech; avisos de escalamiento por
@@ -237,7 +295,7 @@ Bloqueado por Alberto:
    como contacto de la app).
 
 Código y operación:
-8. F2 y F3 (arriba).
+8. F2 y F3 (arriba). Después F4 (agente de código) y F5 (chat en las apps).
 9. Plantilla aprobada para avisar fuera de la ventana de 24 h («tu caso #N fue atendido»).
 10. `whatsapp-webhook` adopta `_shared/meta-signature.ts` (hoy no valida la firma de Meta).
 11. `sync-anthropic-billing` con admin key de ZM Tech, para el saldo de
@@ -247,3 +305,7 @@ Código y operación:
 13. Borrar la rama integrada `feat/waba-agente-fase2`, local y remota.
 14. Cuando se acumulen pushes que tocan archivos de la raíz, confirmar que la landing no
     construye de más (turbo-ignore con el clon de 10 commits).
+15. Robustez del agente: el historial que recibe el modelo es solo texto, sin lo que hicieron
+    sus herramientas en turnos anteriores. Los casos abiertos ya van en el contexto
+    (17-oct-2026); revisar qué más necesita (guías consultadas, preguntas ya respondidas)
+    y sumar casos de QA de conversaciones de varios turnos.
