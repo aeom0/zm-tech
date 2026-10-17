@@ -170,7 +170,7 @@ plantilla aprobada ("tu caso #N fue atendido").
   Anthropic de Alberto (hecho el 16-oct-2026).
 - Alias `soporte@zmtechdev.com` en ImprovMX verificado (pendiente desde el 16-oct).
 
-**F1: nivel 1 y escalamiento** (código listo el 16-oct-2026; falta probar con el número de prueba)
+**F1: nivel 1 y escalamiento** (desplegado el 16-oct-2026; probado con el número de prueba de Meta)
 - Cliente Messages en `_shared/agent/` sin cambiar ZM Lash (hecho el 16-oct-2026).
 - `support-webhook` con `ver_guia` y `escalar_a_humano`, tablas `support_messages` y
   `support_tickets` (migración `20261017011400_support_messages_tickets`).
@@ -220,24 +220,30 @@ Telegram.
 ## Pendientes (16-oct-2026)
 
 Bloqueado por Alberto:
-1. App en Meta for Developers con WhatsApp y los secrets `SUPPORT_WA_*` y
-   `SUPPORT_META_APP_SECRET`; webhook apuntando a `support-webhook`, campo `messages`.
+1. ~~App de Meta, secrets y webhook~~ (hecho el 16-oct-2026): app «GeemaStudio Soporte»
+   (`4601922360022333`, modo desarrollo) en el portafolio **ZM Tech** (`1427136239508763`),
+   WABA de prueba `2654360638357920`, número de prueba +1 555-198-1169 (phone_number_id
+   `1376096792261857`). App suscrita a la WABA y webhook con el campo `messages`.
 2. ~~Bot de Telegram y sus dos secrets~~ (hecho el 16-oct-2026: `@GeemaStudio_bot`,
    secrets en `udelx…`, envío de prueba recibido).
-3. Mergear el PR #92 de F1. El merge despliega todas las Edge Functions.
-4. QA de F1 con el número de prueba y los teléfonos `51999000978`–`999`, con los casos de
-   la sección QA.
-5. Portafolio de negocio de ZM Tech en Meta y número real (producción).
-6. Alias `soporte@zmtechdev.com` en ImprovMX verificado.
+3. ~~Mergear el PR #92~~ (hecho el 16-oct-2026; deploy OK).
+4. Humo de F1 hecho el 16-oct-2026 desde el teléfono de Alberto: saludo respondido y
+   escalamiento con caso #1 y aviso en Telegram. Falta la QA completa con los teléfonos
+   `51999000978`–`999` y los casos de la sección QA.
+5. `SUPPORT_WA_ACCESS_TOKEN` es el token temporal del panel (vence en ~24 h): cambiarlo por
+   el de un usuario del sistema del portafolio ZM Tech, no el de ZM Lash.
+6. Número real (producción) y verificación del negocio en el portafolio ZM Tech.
+7. Alias `soporte@zmtechdev.com` en ImprovMX verificado (Meta pide verificar ese correo
+   como contacto de la app).
 
 Código y operación:
-7. F2 y F3 (arriba).
-8. Plantilla aprobada para avisar fuera de la ventana de 24 h («tu caso #N fue atendido»).
-9. `whatsapp-webhook` adopta `_shared/meta-signature.ts` (hoy no valida la firma de Meta).
-10. `sync-anthropic-billing` con admin key de ZM Tech, para el saldo de
+8. F2 y F3 (arriba).
+9. Plantilla aprobada para avisar fuera de la ventana de 24 h («tu caso #N fue atendido»).
+10. `whatsapp-webhook` adopta `_shared/meta-signature.ts` (hoy no valida la firma de Meta).
+11. `sync-anthropic-billing` con admin key de ZM Tech, para el saldo de
     `zmtech_anthropic_wallet_usd`.
-11. Advisors de `udelx…` previos a F1: 5 funciones `SECURITY DEFINER` ejecutables por
+12. Advisors de `udelx…` previos a F1: 5 funciones `SECURITY DEFINER` ejecutables por
     `authenticated` y la protección de contraseñas filtradas apagada.
-12. Borrar la rama integrada `feat/waba-agente-fase2`, local y remota.
-13. Cuando se acumulen pushes que tocan archivos de la raíz, confirmar que la landing no
+13. Borrar la rama integrada `feat/waba-agente-fase2`, local y remota.
+14. Cuando se acumulen pushes que tocan archivos de la raíz, confirmar que la landing no
     construye de más (turbo-ignore con el clon de 10 commits).
