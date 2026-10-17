@@ -54,8 +54,20 @@ aviso al staff en pago). `support-webhook` tiene su propio ciclo corto sobre
 `callMessagesApi` y su historial en `support_messages`. Las 16 herramientas de reservas
 (`tools.ts`) y el prompt del salón (`prompt.ts`) se quedan en `whatsapp-webhook`.
 
-Pendiente de evaluar en F1: si la validación de firma de Meta, la deduplicación y el
-agrupado de ráfagas se copian o se mueven también a `_shared/`.
+Decidido en F1 (16-oct-2026):
+
+- **Firma de Meta**: `_shared/meta-signature.ts` (HMAC-SHA256 del body crudo con el App
+  Secret, header `X-Hub-Signature-256`). `support-webhook` rechaza con 401 si falta o no
+  coincide. `whatsapp-webhook` todavía no valida la firma; puede adoptar el mismo módulo.
+- **Dedupe y ráfagas**: no se mueve `inbound-gate.ts` (está atado a `wa_messages`,
+  `wa_action_debounce` y al tenant del salón). Soporte usa algo más simple en
+  `support-webhook/store.ts`: `wamid` UNIQUE en `support_messages` y "el último mensaje
+  gana" (cada webhook espera 4 s y solo responde si su mensaje sigue siendo el último
+  entrante; antes de enviar vuelve a mirar). Los escalamientos repetidos en 30 min
+  actualizan el ticket abierto en vez de crear otro.
+- **Fallas**: dos intentos del agente; si ambos fallan se registra el ticket y el usuario
+  recibe el número de caso y el aviso de horario. Tope anti-abuso: 30 respuestas por
+  teléfono por hora.
 
 ### API key de Anthropic
 
@@ -65,10 +77,12 @@ ZM Tech usa **su propia key** (cuenta de Anthropic de Alberto), separada de la d
   `supabase secrets set` o desde el dashboard; la key no va al repo ni al chat.
 - `support-webhook` solo lee ese secret, y `whatsapp-webhook` sigue con `ANTHROPIC_API_KEY`.
   Si una cuenta se queda sin crédito, la otra no se cae.
-- El seguimiento de saldo (`lib/haiku-usage.ts`) usa claves globales en `app_config`
-  (`anthropic_wallet_usd`, `anthropic_api_status`) y `sync-anthropic-billing` asume una sola
-  cuenta. Hay que separarlas por cuenta (por ejemplo, prefijo `zmtech_`) para que el aviso
-  de crédito agotado diga de qué cuenta es.
+- Estado de crédito por cuenta en `_shared/agent/anthropic-credit.ts` (hecho en F1):
+  ZM Lash conserva `anthropic_wallet_usd` y `anthropic_api_status`; ZM Tech usa
+  `zmtech_anthropic_wallet_usd` y `zmtech_anthropic_api_status`. El uso de tokens de
+  soporte se guarda en `support_messages` (no en `ai_usage_log`, que es el costo del salón).
+  Pendiente: `sync-anthropic-billing` sigue leyendo solo la cuenta de ZM Lash; para el
+  costo de ZM Tech hace falta su propia admin key.
 
 ### Identidad: quién escribe
 
@@ -102,15 +116,19 @@ local = remoto (`<version>_<name>.sql`).
 
 ### Guía única
 
-Las FAQ viven hoy en el código de `apps/geemastudio-web/src/app/(shell)/panel/ayuda/page.tsx`
-(arreglo `FAQS`). Se mueven a un archivo compartido que leen la web y el agente, para que la
-respuesta del agente nunca quede atrás de la pantalla de ayuda. Cada cambio de producto
-que altere un flujo actualiza esa guía en el mismo PR.
+Fuente única: `packages/shared-schema/src/utils/guia-ayuda.ts` (`GUIA_AYUDA`,
+`GUIA_CATEGORIAS`), que usa el Centro de Ayuda del panel web. La Edge Function lee una
+copia idéntica en `supabase/functions/_shared/guia-ayuda.ts` (el bundle de Supabase no
+resuelve paquetes del monorepo); un test de `support-webhook`, que corre en el workflow,
+falla si difieren. Cada cambio de producto que altere un flujo actualiza esa guía en el
+mismo PR.
 
 ### Escalamiento
 
 `escalar_a_humano` crea el ticket y avisa a Alberto. Canal a definir (WhatsApp al número
-personal, Telegram o correo a `soporte@`). El usuario recibe un número de ticket y el aviso
+personal, Telegram o correo a `soporte@`); mientras tanto `notifyEscalation` en
+`support-webhook/index.ts` solo deja el ticket en los logs y los casos se revisan en
+`support_tickets`. El usuario recibe un número de ticket y el aviso
 de que una persona lo contacta.
 
 Horario de atención humana: **8:00 a 20:00, hora de Venezuela (UTC−4, sin horario de
@@ -136,11 +154,16 @@ plantilla aprobada ("tu caso #N fue atendido").
   Anthropic de Alberto (hecho el 16-oct-2026).
 - Alias `soporte@zmtechdev.com` en ImprovMX verificado (pendiente desde el 16-oct).
 
-**F1: nivel 1 y escalamiento**
+**F1: nivel 1 y escalamiento** (código listo el 16-oct-2026; falta probar con el número de prueba)
 - Cliente Messages en `_shared/agent/` sin cambiar ZM Lash (hecho el 16-oct-2026).
 - `support-webhook` con `ver_guia` y `escalar_a_humano`, tablas `support_messages` y
-  `support_tickets`.
+  `support_tickets` (migración `20261017011400_support_messages_tickets`).
 - Guía única compartida con la web.
+- Para activarlo, secrets en `udelx…` (los pone Alberto, nunca en el repo ni en el chat):
+  `SUPPORT_WA_PHONE_NUMBER_ID`, `SUPPORT_WA_ACCESS_TOKEN`, `SUPPORT_WA_VERIFY_TOKEN` y
+  `SUPPORT_META_APP_SECRET` (App Secret de la app de Meta for Developers). Webhook de la
+  app: `https://udelxwwnyivknslueerr.supabase.co/functions/v1/support-webhook`, campo
+  `messages`. Sin esos secrets la función rechaza todo (fail-closed).
 
 **F2: identidad y diagnóstico**
 - `support_contacts` y verificación por código al correo.

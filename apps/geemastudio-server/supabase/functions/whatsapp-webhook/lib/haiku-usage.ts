@@ -3,6 +3,11 @@
 import type { SupabaseClient } from "./supabase.ts";
 import { notifyAdmins } from "./notify.ts";
 import { getRequestTenantId } from "./tenant.ts";
+import {
+  clearAnthropicCreditExhausted,
+  isAnthropicCreditExhausted,
+  markAnthropicCreditExhausted,
+} from "../../_shared/agent/anthropic-credit.ts";
 
 /** Evita spam de push si Haiku falla en ráfaga (todas las Edge Functions). */
 const CREDIT_ALERT_DEBOUNCE_SECONDS = 6 * 60 * 60;
@@ -135,44 +140,10 @@ export async function logAIUsage(
 
 // ---------------------------------------------------------------------------
 // Crédito Anthropic agotado — detectar, persistir wallet=0, push staff
+// (cuenta de ZM Lash; soporte de ZM Tech usa sus propias claves)
 // ---------------------------------------------------------------------------
 
-/** True si el body/status de Anthropic indica prepaid sin fondos. */
-export function isAnthropicCreditExhausted(
-  status: number,
-  bodyText: string,
-): boolean {
-  if (status === 402) return true;
-  const lower = (bodyText || "").toLowerCase();
-  return (
-    lower.includes("credit balance is too low") ||
-    lower.includes("purchase credits") ||
-    lower.includes("plans & billing") ||
-    (lower.includes("credit") && lower.includes("too low"))
-  );
-}
-
-async function upsertAppConfig(
-  supabase: SupabaseClient,
-  key: string,
-  value: string,
-): Promise<void> {
-  const { error } = await supabase.from("app_config").upsert(
-    {
-      key,
-      value,
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: "key" },
-  );
-  if (error) {
-    console.warn(
-      "[AI Credit] app_config upsert falló:",
-      key,
-      error.message?.slice(0, 120),
-    );
-  }
-}
+export { isAnthropicCreditExhausted };
 
 /**
  * Tras un HTTP error de Anthropic: si es crédito agotado → wallet=0 + flag
@@ -200,8 +171,7 @@ export async function reportAnthropicApiFailure(
   if (!creditOut || !supabase) return;
 
   try {
-    await upsertAppConfig(supabase, "anthropic_wallet_usd", "0");
-    await upsertAppConfig(supabase, "anthropic_api_status", "credit_exhausted");
+    await markAnthropicCreditExhausted(supabase, "zmlash");
 
     const { data: claimed, error: claimErr } = await supabase.rpc(
       "waba_claim_action_debounce",
@@ -239,13 +209,7 @@ export async function clearAnthropicCreditExhaustedFlag(
 ): Promise<void> {
   if (!supabase) return;
   try {
-    const { data } = await supabase
-      .from("app_config")
-      .select("value")
-      .eq("key", "anthropic_api_status")
-      .maybeSingle();
-    if (data?.value !== "credit_exhausted") return;
-    await upsertAppConfig(supabase, "anthropic_api_status", "ok");
+    await clearAnthropicCreditExhausted(supabase, "zmlash");
   } catch (err) {
     console.warn("[AI Credit] clear flag:", err);
   }
