@@ -5,6 +5,9 @@
  * un "Yo quiero" tras la promo se contesta como si no se hubiera ofrecido nada.
  */
 export function templateLogToHistoryText(raw: string): string {
+  if (/lifting_cuidados_ricino/i.test(raw)) {
+    return "[Plantilla enviada por el salón]: cuidados de lifting. Desde el día 10 aplica aceite de ricino en las pestañas (cuidado en casa, no es un servicio).";
+  }
   const body = raw
     .replace(/^\[plantilla:[^\]]*\]\s*/i, "")
     // Primer segmento = nombre de la clienta (parámetro {{1}}), no aporta contexto.

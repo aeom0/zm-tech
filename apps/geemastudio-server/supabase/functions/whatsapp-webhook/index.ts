@@ -44,6 +44,7 @@ import {
 } from "./lib/parse-message.ts";
 import { persistInboundWaImage } from "./lib/inbound-image.ts";
 import {
+  enrichTextForAgent,
   enrichTextWithQuotedContent,
   formatInboundWithQuotePreview,
   getInboundReplyContext,
@@ -288,6 +289,8 @@ async function processMessage(body: Record<string, unknown>): Promise<void> {
       let effectiveText = messageText || buttonReplyText || "";
       let effectivePreview = inContent;
       let coveredThroughIso: string | null = null;
+      // Burbuja citada. El agente la recibe siempre; los matchers, solo si el reply es corto.
+      let quotedForAgent: string | null = null;
 
       if (isTextBurst) {
         // Reintentar lock: no dropear follow-ups CTWA (~5s) si el peer ya soltó.
@@ -399,10 +402,9 @@ async function processMessage(body: Record<string, unknown>): Promise<void> {
         }
       }
 
-      // Reply con quote (deslizar → comentar): enriquecer SOLO replies cortos
-      // ("Si" / "este") para que matchers/Haiku vean el creativo. Preguntas largas
-      // no concatenan el quote — evita que ubicación/horarios del mensaje citado
-      // disparen matchers (TRANSCAM …5337).
+      // Reply con quote (deslizar → comentar). Matchers: solo replies cortos
+      // ("Si" / "este"), para no reenviar Maps u horarios (TRANSCAM …5337).
+      // El agente recibe la burbuja citada también en preguntas largas.
       // Imágenes: persiste reply_to_wamid + reply_image_url (panel miniatura) y
       // caption cercano si el OUT era solo `[imagen]` (Angui / staff foto+etiqueta).
       const replyCtx = getInboundReplyContext(message);
@@ -418,6 +420,7 @@ async function processMessage(body: Record<string, unknown>): Promise<void> {
         }
         if (quoted?.content || quoted?.image_url) {
           const quoteLabel = quoted.content || "[imagen]";
+          quotedForAgent = quoteLabel;
           effectiveText = enrichTextWithQuotedContent(
             effectiveText,
             quoteLabel,
@@ -551,7 +554,9 @@ async function processMessage(body: Record<string, unknown>): Promise<void> {
             catalog,
             wabaConfig,
             phoneCountry: client?.phone_country ?? null,
-            messageText: routed.text,
+            messageText: quotedForAgent
+              ? enrichTextForAgent(routed.text, quotedForAgent)
+              : routed.text,
             adCopy: fromAd ? adCopy : null,
           });
           if (agentHandled) return;

@@ -14,6 +14,7 @@ import {
   sessionDefersToClassic,
   tapToAgentUtterance,
 } from "./inbound-route.ts";
+import { enrichTextForAgent, enrichTextWithQuotedContent } from "../lib/reply-context.ts";
 import { promoValidityNote } from "../lib/haiku-prompt.ts";
 import { COALESCE_WINDOW_MS } from "../lib/inbound-gate.ts";
 import { AWAITING_CURSO_LEAD } from "../handlers/booking-flow.ts";
@@ -140,6 +141,29 @@ Deno.test("historial: quita el inbound actual, empieza en user y marca staff", (
     content: "Hola, cuánto cuesta?",
   });
   assertStringIncludes(String(messages[1].content), "[Equipo");
+});
+
+Deno.test("el agente recibe la burbuja citada aunque el reply sea largo", () => {
+  const quoted = "Diseño de cejas + Tinturado (Henna) a tan solo S/70";
+  const long = "En el caso de las uñitas, que precio estan ? Por favor";
+  assertEquals(enrichTextWithQuotedContent(long, quoted), long);
+  const forAgent = enrichTextForAgent(long, quoted);
+  assertStringIncludes(forAgent, "[Respondiendo a]");
+  assertStringIncludes(forAgent, "Tinturado (Henna)");
+  const { messages } = buildAgentHistory(
+    [
+      {
+        direction: "in",
+        msg_type: "text",
+        content: `${long} ↳ ${quoted}`,
+        created_at: "2026-10-16T15:00:00Z",
+      },
+    ],
+    forAgent,
+  );
+  assertEquals(messages.length, 1);
+  assertStringIncludes(String(messages[0].content), "[Respondiendo a]");
+  assertEquals(String(messages[0].content).includes("↳"), false);
 });
 
 Deno.test("historial: gap >2h descarta lo anterior", () => {
@@ -431,6 +455,44 @@ Deno.test("tools: reservar_horario valida entrada y no marca turno atendido", as
 Deno.test("tools: tool desconocida devuelve error", async () => {
   const r = await runAgentTool("pasar_a_agendar", {}, toolCtx());
   assertEquals(r.isError, true);
+});
+
+Deno.test("buscar_servicios trata la henna como tinturado de cejas", async () => {
+  const service = {
+    id: "s-tint",
+    name: "Diseño + Tinturado de Cejas",
+    short_name: "Diseño + Tint. Cejas",
+    category_id: "c-cejas",
+    subcategory: null,
+    price: "70",
+    duration: 60,
+    is_active: true,
+  };
+  const lashes = {
+    id: "s-lash",
+    name: "Lifting + Tinturado de Pestañas",
+    short_name: null,
+    category_id: "c-lift",
+    subcategory: null,
+    price: "60",
+    duration: 60,
+    is_active: true,
+  };
+  const catalog = {
+    ...emptyCatalog,
+    services: [service, lashes],
+    categories: [
+      { id: "c-cejas", name: "Cejas y Rostro", order: 1 },
+      { id: "c-lift", name: "Lifting", order: 2 },
+    ],
+  } as unknown as ServiceCatalog;
+  const hit = await runAgentTool(
+    "buscar_servicios",
+    { consulta: "pigmentado con henna", categoria_id: null },
+    { ...toolCtx(), catalog },
+  );
+  assertStringIncludes(hit.content, "[s-tint]");
+  assertEquals(hit.content.includes("[s-lash]"), false);
 });
 
 Deno.test("tools: buscar_servicios filtra por palabras sin acentos y usa categoría", async () => {

@@ -366,6 +366,30 @@ async function depositAwaitingReview(
   return !!byPhone?.id;
 }
 
+/** Aviso de la plantilla de ricino, si ya se envió. El historial del agente solo mira 6 h. */
+async function ricinoCareContextLine(
+  supabase: SupabaseClient,
+  clientId: string,
+): Promise<string> {
+  const { data } = await supabase
+    .from("appointments")
+    .select("lifting_ricino_nudge_sent_at")
+    .eq("client_id", clientId)
+    .not("lifting_ricino_nudge_sent_at", "is", null)
+    .order("lifting_ricino_nudge_sent_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  const sentAt = data?.lifting_ricino_nudge_sent_at;
+  if (!sentAt) return "";
+  const when = new Date(String(sentAt)).toLocaleDateString("es-PE", {
+    timeZone: "America/Lima",
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+  return `- Se le envió la plantilla de cuidados de ricino el ${when}: aceite de ricino en las pestañas desde el día 10 del lifting.`;
+}
+
 export async function getClientContext(
   supabase: SupabaseClient,
   phoneNumber: string,
@@ -578,6 +602,7 @@ export async function getClientContext(
       .slice(0, 5);
 
     const uniqueNames = [...new Set(serviceNames)];
+    const ricinoLine = await ricinoCareContextLine(supabase, client.id);
 
     return [
       "HISTORIAL DE LA CLIENTA:",
@@ -588,6 +613,7 @@ export async function getClientContext(
       uniqueNames.length > 0
         ? `- Servicios anteriores: ${uniqueNames.join(", ")}`
         : "",
+      ricinoLine,
       pendingBlock,
       cartBlock,
     ]

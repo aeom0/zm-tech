@@ -702,13 +702,47 @@ const PROMO_QUERY_WORDS = new Set([
 
 const PACK_QUERY_WORDS = new Set(["pack", "packs"]);
 
+const QUERY_STOP = new Set([
+  "con",
+  "de",
+  "del",
+  "la",
+  "el",
+  "las",
+  "los",
+  "un",
+  "una",
+  "para",
+  "por",
+  "en",
+  "al",
+  "y",
+]);
+const HENNA_QUERY = new Set([
+  "henna",
+  "pigmentado",
+  "pigmentada",
+  "pigmentacion",
+]);
+
+/**
+ * Henna de cejas es el tinturado de cejas. Sin este alias, «henna» no aparece
+ * en el nombre del catálogo y buscar_servicios responde «Sin resultados».
+ */
+function catalogQueryWords(consulta: string | null): string[] {
+  const words = norm(consulta ?? "").split(/\s+/).filter((w) => w.length > 1);
+  if (!words.some((w) => HENNA_QUERY.has(w))) return words;
+  const rest = words.filter((w) => !HENNA_QUERY.has(w) && !QUERY_STOP.has(w));
+  return [...new Set([...rest, "tinturado", "ceja"])];
+}
+
 /** Búsqueda de catálogo para el modelo: todas las palabras deben aparecer. */
 export function searchCatalog(
   catalog: ServiceCatalog,
   consulta: string | null,
   categoriaId: string | null,
 ): string[] {
-  const words = norm(consulta ?? "").split(/\s+/).filter((w) => w.length > 1);
+  const words = catalogQueryWords(consulta);
   const matchWords = words.filter((w) =>
     !PROMO_QUERY_WORDS.has(w) && !PACK_QUERY_WORDS.has(w)
   );

@@ -219,7 +219,7 @@ export function shouldEnrichWithQuotedContent(userText: string): boolean {
   return true;
 }
 
-/** Une el texto de la clienta con el contenido citado para matchers + Haiku. */
+/** Une el texto de la clienta con el contenido citado para matchers del bot clásico. */
 export function enrichTextWithQuotedContent(
   userText: string,
   quotedContent: string,
@@ -231,6 +231,22 @@ export function enrichTextWithQuotedContent(
   if (!base) return `[Respondiendo a] ${quoted}`;
   // Evitar duplicar si el coalesce ya metió el bloque
   if (base.includes("[Respondiendo a]")) return base;
+  return `${base}\n[Respondiendo a] ${quoted}`;
+}
+
+/**
+ * Turno del agente: siempre incluye la burbuja citada.
+ * El bot clásico sigue con enrichTextWithQuotedContent (solo replies cortos),
+ * para que un swipe sobre ubicación u horarios no dispare esos matchers.
+ */
+export function enrichTextForAgent(
+  userText: string,
+  quotedContent: string,
+): string {
+  const base = clientTypedPortion(userText);
+  const quoted = quotedContent.trim().slice(0, 600);
+  if (!quoted) return userText.trim();
+  if (!base) return `[Respondiendo a] ${quoted}`;
   return `${base}\n[Respondiendo a] ${quoted}`;
 }
 

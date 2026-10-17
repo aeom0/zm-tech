@@ -120,7 +120,7 @@ No sustituyen collages CTWA. Portafolio = ojos reales (Fox/Anime/etc. sin ficha 
 | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Haiku**                 | Bloque dinámico `haiku_emotional_selling_ctwa_ext_lift` si `from_ad_at` — metáfora suave (valoración, invertir en ti), sin rol de psicóloga |
 | **cart-nudge nudge1**     | En `awaiting_datetime`: imagen (portafolio → collage CTWA) + frase CMS rotativa + calendario                                                |
-| **cart-nudge nudge2**     | Copy suave CMS (`emotional_nudge2_reply_ctwa`), sin urgencia fría                                                                           |
+| **cart-nudge nudge2**     | ≥90 min después del nudge 1. Copy fijo del cron, no lo redacta Haiku: CMS `emotional_nudge2_reply_ctwa` (default «Sin presión 💜 Si más adelante quieres retomar tu cita, escríbenos por aquí y te pasamos los horarios en segundos.»). `addressWithoutHello` antepone «Srta. {nombre},». Vacía la selección. Solo si el lead es CTWA con carrito de extensiones o lifting; si no, va el copy genérico de carrito abandonado. |
 | **Decline**               | _"Voy a pensarlo…"_ → `emotional_decline_reply_ctwa` + vaciar carrito                                                                       |
 | **Foto proactiva precio** | Caption cálido `emotional_price_cta_ext` (CTWA + extensiones)                                                                               |
 
@@ -139,7 +139,13 @@ No sustituyen collages CTWA. Portafolio = ojos reales (Fox/Anime/etc. sin ficha 
 - Mensajes con bot pausado (`bot_paused_at`)
 - A/B de frases (una vez que la métrica confirme que v1 convierte)
 
-Código: `lib/emotional-selling.ts`, migración `add_emotional_selling_ctwa`.
+Código: `lib/emotional-selling.ts`, función `cart-nudge`, migración `add_emotional_selling_ctwa`.
+
+### 2.4 Datos de salón que el agente debe decir (16-oct-2026)
+
+- **Henna = tinturado de cejas.** «Pigmentado con henna» es el mismo servicio que «Diseño + Tinturado de Cejas». No es el tinturado de pestañas. `buscar_servicios` traduce henna/pigmentado a ese ítem.
+- **Reply a una burbuja.** El agente siempre recibe el mensaje citado (`[Respondiendo a]`), también si el texto es largo. Los matchers del bot clásico siguen ignorando el quote en preguntas largas.
+- **Cuidados de ricino.** Desde el día 10 del lifting se aplica aceite de ricino en las pestañas (plantilla `lifting_cuidados_ricino_zm`, cuidado en casa). Si la clienta ya la recibió, el contexto de ficha lo dice aunque el envío tenga más de 6 h. Si el lifting se ve disperso, se explica eso y se puede ofrecer Lash Botox al precio del catálogo.
 
 ---
 
