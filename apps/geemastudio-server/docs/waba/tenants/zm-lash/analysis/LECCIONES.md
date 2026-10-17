@@ -578,6 +578,8 @@ Datos de catálogo en prod (sin migración): pack "Lifting + Tinturado" desactiv
 | [P2 2026-10-07] Recordatorio de boleta duplicado tras el pedido de Haiku (`…3306`) | `wasDepositReminderRecentlySent` solo reconocía su propio literal, no el "nombre completo y DNI/CE" de Haiku | La verificación también reconoce un pedido previo de nombre + DNI en el texto saliente del bot | #76 |
 | [P2] Respuestas separadas a dos mensajes con 8,7 s de diferencia (`…3993`) | No es bug: la ventana de coalescencia (4,5 s + 1,5 s de quietud) cierra antes del 2.º mensaje y Haiku contesta cada uno | Sin cambio; ampliar la ventana haría más lento el bot para todas. Decisión de producto pendiente | reconstrucción en `wa_messages`, 6-oct |
 | Clientas duplicadas por BSUID (SAM / SAMANTA ASORZA) | Un BSUID crea ficha aparte sin teléfono; el bot no vincula con la ficha existente | SAM unificada a mano. Otras 8 coincidencias posibles esperan confirmación de Vanessa; sin cambio de código | datos en prod, sin migración |
+| [2026-10-17] Agente sin dato de duración de extensiones / sin henna / sin ricino (`…5609`, `…6684`, `…5951`) | El agente decía «no tengo dato oficial» y el staff respondía a mano | `038a10b` (15–18 días), `480031a` (henna = tinturado, ricino), 16-oct 19:36–20:46 Lima | sin reincidencia posterior |
+| [2026-10-17] Negritas Markdown y «sin presión» en el 2.º aviso (`…1084`, `…7232`, `…7910`) | OUT del agente con `**x**`; nudge 2 siempre cerraba igual | `06ae179` (16-oct 09:32 Lima), `26882b9` (16-oct ~19:38 Lima) | todos los casos fueron antes del deploy |
 
 ---
 
