@@ -1,12 +1,18 @@
 'use client'
 
 import { useState } from 'react'
+import dynamic from 'next/dynamic'
 import { FEATURES, BUSINESS_TYPES } from '@/lib/constants'
 import { FeatureCard } from '@/components/ui/FeatureCard'
 import { BusinessTypeTab } from '@/components/ui/BusinessTypeTab'
 import { RevealWrapper } from '@/components/ui/RevealWrapper'
-import { WABAPreview } from '@/components/ui/WABAPreview'
 import { MessageCircle, Check } from 'lucide-react'
+
+// El Player de Remotion solo corre en el cliente; el hueco reserva la proporción para no mover el layout.
+const WhatsAppFlowPlayer = dynamic(
+  () => import('@/components/ui/WhatsAppFlowPlayer').then((m) => m.WhatsAppFlowPlayer),
+  { ssr: false, loading: () => <div className="aspect-[760/660] w-full" /> },
+)
 
 export function FeaturesSection() {
   const [activeType, setActiveType] = useState(BUSINESS_TYPES[0].id)
@@ -39,7 +45,7 @@ export function FeaturesSection() {
         {/* Card hero WABA */}
         <RevealWrapper variant="up" delay={100}>
           <div className="mb-8 overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950 dark:bg-zinc-900">
-            <div className="flex flex-col items-center gap-8 p-8 md:flex-row md:p-10">
+            <div className="flex flex-col items-center gap-6 p-6 pb-2 md:flex-row md:gap-4 md:p-10 md:pr-4">
               {/* Texto izquierda */}
               <div className="flex-1 text-center md:text-left">
                 <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#25D366]/20 bg-[#25D366]/10 px-3 py-1.5 text-xs font-semibold text-[#25D366]">
@@ -67,8 +73,8 @@ export function FeaturesSection() {
                 </div>
               </div>
               {/* Preview derecha */}
-              <div className="w-full flex-shrink-0 md:w-auto">
-                <WABAPreview />
+              <div className="mx-auto w-full max-w-[560px] md:w-[54%] md:max-w-none md:flex-shrink-0">
+                <WhatsAppFlowPlayer />
               </div>
             </div>
           </div>
