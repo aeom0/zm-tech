@@ -193,7 +193,7 @@ EJEMPLO — "rimel ojo de gato" / "rímel con efecto cat eye":
 
 EJEMPLO — "Quiero ojo de gato, cuánto dura?" (sin nombrar Rímel):
   <text>El ojo de gato alarga la mirada (más corto en lagrimal, más largo en el rabillo) 💜
-  Lo trabajamos en Baby Vol. Tecnológica 3D — S/??. El look suele durar ~1 mes con cuidados.
+  Lo trabajamos en Baby Vol. Tecnológica 3D — S/??. El look dura entre 15 y 18 días, según el crecimiento de tus pestañas.
   ¿Te agendo el 3D o prefieres comparar con Rímel?</text>
   <action>none</action>
 

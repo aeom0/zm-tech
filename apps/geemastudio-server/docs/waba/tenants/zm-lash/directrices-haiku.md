@@ -146,6 +146,7 @@ Código: `lib/emotional-selling.ts`, función `cart-nudge`, migración `add_emot
 - **Henna = tinturado de cejas.** «Pigmentado con henna» es el mismo servicio que «Diseño + Tinturado de Cejas». No es el tinturado de pestañas. `buscar_servicios` traduce henna/pigmentado a ese ítem.
 - **Reply a una burbuja.** El agente siempre recibe el mensaje citado (`[Respondiendo a]`), también si el texto es largo. Los matchers del bot clásico siguen ignorando el quote en preguntas largas.
 - **Cuidados de ricino.** Desde el día 10 del lifting se aplica aceite de ricino en las pestañas (plantilla `lifting_cuidados_ricino_zm`, cuidado en casa). Si la clienta ya la recibió, el contexto de ficha lo dice aunque el envío tenga más de 6 h. Si el lifting se ve disperso, se explica eso y se puede ofrecer Lash Botox al precio del catálogo.
+- **Duración de extensiones.** El look dura entre 15 y 18 días, según el crecimiento natural de las pestañas. La fibra se cae cuando se renueva la pestaña a la que va pegada. Bañarse o dormir no las bota si no se frotan, no hay aceite cerca de los ojos y se mantienen limpias. No decir que duran 1 mes. Las uñas sí duran aproximadamente 1 mes.
 
 ---
 
@@ -155,7 +156,7 @@ Código: `lib/emotional-selling.ts`, función `cart-nudge`, migración `add_emot
 
 | Acción                                                   | Descripción                                                    |
 | -------------------------------------------------------- | -------------------------------------------------------------- |
-| Responder precios, duración, diferencias entre servicios | Solo precios del catálogo en BD                                |
+| Responder precios, duración, diferencias entre servicios | Precios del catálogo. Extensiones: 15–18 días. Uñas: ~1 mes. |
 | Recomendar según historial o "primera vez"               | Máximo 2 opciones relevantes, no listas largas                 |
 | Resolver dudas (cuidados, contraindicaciones, embarazo)  | Derivar a especialista si es médico                            |
 | **`add_to_cart`**                                        | Identificar servicio(s) y llenar carrito en el **mismo turno** |
