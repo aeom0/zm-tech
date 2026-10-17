@@ -60,11 +60,19 @@ jobs:
           done
           exit $missing
 
-      - name: deno check (webhook + held-slot-watch)
+      - name: deno check (webhooks + held-slot-watch)
         run: |
           cd supabase/functions
           deno check whatsapp-webhook/index.ts
+          deno check support-webhook/index.ts
           deno check held-slot-watch/index.ts
+
+      # Incluye el test que exige que _shared/guia-ayuda.ts sea copia exacta
+      # de packages/shared-schema/src/utils/guia-ayuda.ts.
+      - name: deno test (support-webhook)
+        run: |
+          cd supabase/functions
+          deno test --allow-env --allow-read support-webhook/ _shared/meta-signature.test.ts
 
   deploy:
     name: Deploy ${{ matrix.fn.name }}
@@ -77,6 +85,7 @@ jobs:
         fn:
           # jwt=false -> --no-verify-jwt (Meta / pg_cron con service_role)
           - { name: whatsapp-webhook, jwt: false }
+          - { name: support-webhook, jwt: false }
           - { name: held-slot-watch, jwt: false }
           - { name: send-promo-whatsapp, jwt: false }
           - { name: signup-tenant, jwt: false }

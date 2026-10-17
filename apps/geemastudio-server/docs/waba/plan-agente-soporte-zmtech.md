@@ -54,8 +54,20 @@ aviso al staff en pago). `support-webhook` tiene su propio ciclo corto sobre
 `callMessagesApi` y su historial en `support_messages`. Las 16 herramientas de reservas
 (`tools.ts`) y el prompt del salón (`prompt.ts`) se quedan en `whatsapp-webhook`.
 
-Pendiente de evaluar en F1: si la validación de firma de Meta, la deduplicación y el
-agrupado de ráfagas se copian o se mueven también a `_shared/`.
+Decidido en F1 (16-oct-2026):
+
+- **Firma de Meta**: `_shared/meta-signature.ts` (HMAC-SHA256 del body crudo con el App
+  Secret, header `X-Hub-Signature-256`). `support-webhook` rechaza con 401 si falta o no
+  coincide. `whatsapp-webhook` todavía no valida la firma; puede adoptar el mismo módulo.
+- **Dedupe y ráfagas**: no se mueve `inbound-gate.ts` (está atado a `wa_messages`,
+  `wa_action_debounce` y al tenant del salón). Soporte usa algo más simple en
+  `support-webhook/store.ts`: `wamid` UNIQUE en `support_messages` y "el último mensaje
+  gana" (cada webhook espera 4 s y solo responde si su mensaje sigue siendo el último
+  entrante; antes de enviar vuelve a mirar). Los escalamientos repetidos en 30 min
+  actualizan el ticket abierto en vez de crear otro.
+- **Fallas**: dos intentos del agente; si ambos fallan se registra el ticket y el usuario
+  recibe el número de caso y el aviso de horario. Tope anti-abuso: 30 respuestas por
+  teléfono por hora.
 
 ### API key de Anthropic
 
@@ -65,10 +77,12 @@ ZM Tech usa **su propia key** (cuenta de Anthropic de Alberto), separada de la d
   `supabase secrets set` o desde el dashboard; la key no va al repo ni al chat.
 - `support-webhook` solo lee ese secret, y `whatsapp-webhook` sigue con `ANTHROPIC_API_KEY`.
   Si una cuenta se queda sin crédito, la otra no se cae.
-- El seguimiento de saldo (`lib/haiku-usage.ts`) usa claves globales en `app_config`
-  (`anthropic_wallet_usd`, `anthropic_api_status`) y `sync-anthropic-billing` asume una sola
-  cuenta. Hay que separarlas por cuenta (por ejemplo, prefijo `zmtech_`) para que el aviso
-  de crédito agotado diga de qué cuenta es.
+- Estado de crédito por cuenta en `_shared/agent/anthropic-credit.ts` (hecho en F1):
+  ZM Lash conserva `anthropic_wallet_usd` y `anthropic_api_status`; ZM Tech usa
+  `zmtech_anthropic_wallet_usd` y `zmtech_anthropic_api_status`. El uso de tokens de
+  soporte se guarda en `support_messages` (no en `ai_usage_log`, que es el costo del salón).
+  Pendiente: `sync-anthropic-billing` sigue leyendo solo la cuenta de ZM Lash; para el
+  costo de ZM Tech hace falta su propia admin key.
 
 ### Identidad: quién escribe
 
@@ -102,16 +116,36 @@ local = remoto (`<version>_<name>.sql`).
 
 ### Guía única
 
-Las FAQ viven hoy en el código de `apps/geemastudio-web/src/app/(shell)/panel/ayuda/page.tsx`
-(arreglo `FAQS`). Se mueven a un archivo compartido que leen la web y el agente, para que la
-respuesta del agente nunca quede atrás de la pantalla de ayuda. Cada cambio de producto
-que altere un flujo actualiza esa guía en el mismo PR.
+Fuente única: `packages/shared-schema/src/utils/guia-ayuda.ts` (`GUIA_AYUDA`,
+`GUIA_CATEGORIAS`), que usa el Centro de Ayuda del panel web. La Edge Function lee una
+copia idéntica en `supabase/functions/_shared/guia-ayuda.ts` (el bundle de Supabase no
+resuelve paquetes del monorepo); un test de `support-webhook`, que corre en el workflow,
+falla si difieren. Cada cambio de producto que altere un flujo actualiza esa guía en el
+mismo PR.
 
 ### Escalamiento
 
-`escalar_a_humano` crea el ticket y avisa a Alberto. Canal a definir (WhatsApp al número
-personal, Telegram o correo a `soporte@`). El usuario recibe un número de ticket y el aviso
-de que una persona lo contacta.
+`escalar_a_humano` crea el ticket y avisa a Alberto por **Telegram** (decidido el
+16-oct-2026: sin ventana de 24 h ni plantillas). El aviso (`support-webhook/telegram.ts`)
+lleva caso, categoría, urgencia, contacto, si llegó en horario y el resumen, en texto
+plano. También avisa una sola vez cuando la cuenta de Anthropic de ZM Tech se queda sin
+crédito. Si Telegram falla o faltan sus secrets, el aviso queda en los logs y el caso en
+`support_tickets`; la respuesta al usuario no se bloquea. El usuario recibe un número de
+ticket y el aviso de que una persona lo contacta.
+
+Configurar el bot (lo hace Alberto; el token nunca va al repo ni al chat):
+1. En Telegram, escribir a `@BotFather` → `/newbot` → nombre (p. ej. «Soporte GeemaStudio»)
+   y usuario terminado en `bot`. BotFather devuelve el token.
+2. Abrir el chat con el bot nuevo y mandarle cualquier mensaje (para un grupo: agregar el
+   bot al grupo y escribir algo ahí).
+3. Abrir `https://api.telegram.org/bot<TOKEN>/getUpdates` en el navegador y copiar
+   `message.chat.id` (en grupos es negativo).
+4. `supabase secrets set SUPPORT_TELEGRAM_BOT_TOKEN=… SUPPORT_TELEGRAM_CHAT_ID=…
+   --project-ref udelxwwnyivknslueerr` (o en el dashboard, Edge Functions → Secrets).
+   Toman efecto sin redeploy.
+5. Probar: escalar un caso desde un teléfono de QA (`51999000978`–`999`).
+
+El bot solo envía; no lee ni responde mensajes de Telegram.
 
 Horario de atención humana: **8:00 a 20:00, hora de Venezuela (UTC−4, sin horario de
 verano)**, todos los días hasta que se defina otra cosa. El horario lo calcula el código y
@@ -136,11 +170,17 @@ plantilla aprobada ("tu caso #N fue atendido").
   Anthropic de Alberto (hecho el 16-oct-2026).
 - Alias `soporte@zmtechdev.com` en ImprovMX verificado (pendiente desde el 16-oct).
 
-**F1: nivel 1 y escalamiento**
+**F1: nivel 1 y escalamiento** (código listo el 16-oct-2026; falta probar con el número de prueba)
 - Cliente Messages en `_shared/agent/` sin cambiar ZM Lash (hecho el 16-oct-2026).
 - `support-webhook` con `ver_guia` y `escalar_a_humano`, tablas `support_messages` y
-  `support_tickets`.
+  `support_tickets` (migración `20261017011400_support_messages_tickets`).
 - Guía única compartida con la web.
+- Para activarlo, secrets en `udelx…` (los pone Alberto, nunca en el repo ni en el chat):
+  `SUPPORT_WA_PHONE_NUMBER_ID`, `SUPPORT_WA_ACCESS_TOKEN`, `SUPPORT_WA_VERIFY_TOKEN` y
+  `SUPPORT_META_APP_SECRET` (App Secret de la app de Meta for Developers). Webhook de la
+  app: `https://udelxwwnyivknslueerr.supabase.co/functions/v1/support-webhook`, campo
+  `messages`. Sin esos secrets la función rechaza todo (fail-closed). Para los avisos:
+  `SUPPORT_TELEGRAM_BOT_TOKEN` y `SUPPORT_TELEGRAM_CHAT_ID` (ver «Escalamiento»).
 
 **F2: identidad y diagnóstico**
 - `support_contacts` y verificación por código al correo.
@@ -171,8 +211,33 @@ plantilla aprobada ("tu caso #N fue atendido").
 
 ## Decisiones abiertas
 
-- Canal del aviso de escalamiento.
 - Días de atención (por ahora, todos los días de 8:00 a 20:00 VET).
 
 Decidido (16-oct-2026): número nuevo; horario 8:00–20:00 VET; desarrollo con el número de
-prueba de Meta mientras no exista el portafolio de ZM Tech.
+prueba de Meta mientras no exista el portafolio de ZM Tech; avisos de escalamiento por
+Telegram.
+
+## Pendientes (16-oct-2026)
+
+Bloqueado por Alberto:
+1. App en Meta for Developers con WhatsApp y los secrets `SUPPORT_WA_*` y
+   `SUPPORT_META_APP_SECRET`; webhook apuntando a `support-webhook`, campo `messages`.
+2. ~~Bot de Telegram y sus dos secrets~~ (hecho el 16-oct-2026: `@GeemaStudio_bot`,
+   secrets en `udelx…`, envío de prueba recibido).
+3. Mergear el PR #92 de F1. El merge despliega todas las Edge Functions.
+4. QA de F1 con el número de prueba y los teléfonos `51999000978`–`999`, con los casos de
+   la sección QA.
+5. Portafolio de negocio de ZM Tech en Meta y número real (producción).
+6. Alias `soporte@zmtechdev.com` en ImprovMX verificado.
+
+Código y operación:
+7. F2 y F3 (arriba).
+8. Plantilla aprobada para avisar fuera de la ventana de 24 h («tu caso #N fue atendido»).
+9. `whatsapp-webhook` adopta `_shared/meta-signature.ts` (hoy no valida la firma de Meta).
+10. `sync-anthropic-billing` con admin key de ZM Tech, para el saldo de
+    `zmtech_anthropic_wallet_usd`.
+11. Advisors de `udelx…` previos a F1: 5 funciones `SECURITY DEFINER` ejecutables por
+    `authenticated` y la protección de contraseñas filtradas apagada.
+12. Borrar la rama integrada `feat/waba-agente-fase2`, local y remota.
+13. Cuando se acumulen pushes que tocan archivos de la raíz, confirmar que la landing no
+    construye de más (turbo-ignore con el clon de 10 commits).
