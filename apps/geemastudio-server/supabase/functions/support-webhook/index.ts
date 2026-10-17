@@ -4,6 +4,7 @@
 // Secrets: SUPPORT_WA_VERIFY_TOKEN, SUPPORT_META_APP_SECRET,
 // SUPPORT_WA_PHONE_NUMBER_ID, SUPPORT_WA_ACCESS_TOKEN y ZMTECH_ANTHROPIC_API_KEY
 // (cuenta de Anthropic de ZM Tech; ZM Lash sigue con ANTHROPIC_API_KEY).
+// Avisos al equipo: SUPPORT_TELEGRAM_BOT_TOKEN y SUPPORT_TELEGRAM_CHAT_ID (telegram.ts).
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import {
@@ -13,6 +14,7 @@ import {
 import {
   clearAnthropicCreditExhausted,
   isAnthropicCreditExhausted,
+  isAnthropicCreditMarkedExhausted,
   markAnthropicCreditExhausted,
 } from "../_shared/agent/anthropic-credit.ts";
 import { isValidMetaSignature } from "../_shared/meta-signature.ts";
@@ -28,6 +30,11 @@ import {
   logOutbound,
   upsertTicket,
 } from "./store.ts";
+import {
+  type EscalationAlert,
+  formatEscalationAlert,
+  sendTelegramAlert,
+} from "./telegram.ts";
 import { sendSupportText, supportPhoneNumberId } from "./wa.ts";
 
 /** Espera para agrupar mensajes seguidos antes de responder. */
@@ -48,24 +55,31 @@ function inboundText(message: Record<string, unknown>): string {
     return String((message.button as { text?: string })?.text ?? "");
   }
   const caption = (message[type] as { caption?: string } | undefined)?.caption;
-  const label = `[El usuario envió un mensaje de tipo ${type}; por ahora solo puedes leer texto]`;
+  const label =
+    `[El usuario envió un mensaje de tipo ${type}; por ahora solo puedes leer texto]`;
   return caption ? `${label}\n${caption}` : label;
 }
 
-/** Aviso del escalamiento al equipo. Canal pendiente de decidir (plan, «Escalamiento»). */
-function notifyEscalation(ticket: {
-  id: number;
-  reused: boolean;
-  urgente: boolean;
-  categoria: string;
-  resumen: string;
-}): void {
+/** Aviso del escalamiento al equipo por Telegram; si falla, queda en logs y el ticket en la BD. */
+async function notifyEscalation(alert: EscalationAlert): Promise<void> {
   console.log(
-    `[SUPPORT] ticket #${ticket.id}${ticket.reused ? " (actualizado)" : ""}`,
-    ticket.categoria,
-    ticket.urgente ? "URGENTE" : "",
-    ticket.resumen.slice(0, 200),
+    `[SUPPORT] ticket #${alert.id}${alert.reused ? " (actualizado)" : ""}`,
+    alert.categoria,
+    alert.urgente ? "URGENTE" : "",
   );
+  await sendTelegramAlert(formatEscalationAlert(alert));
+}
+
+/** Marca el crédito de ZM Tech como agotado y avisa por Telegram solo la primera vez. */
+async function handleCreditExhausted(supabase: SupabaseClient): Promise<void> {
+  const already = await isAnthropicCreditMarkedExhausted(supabase, "zmtech");
+  await markAnthropicCreditExhausted(supabase, "zmtech");
+  if (!already) {
+    await sendTelegramAlert(
+      "Soporte GeemaStudio: la cuenta de Anthropic de ZM Tech se quedó sin crédito. " +
+        "El agente no responde; cada mensaje queda como caso. Recargar en console.anthropic.com.",
+    );
+  }
 }
 
 async function replyToTurn(
@@ -105,8 +119,16 @@ async function replyToTurn(
         origen: "agente",
       },
     });
-    notifyEscalation({ ...ticket, ...input });
-    return `Caso #${ticket.id} registrado. Aviso para el usuario: ${humanReplyNotice(hours)}`;
+    await notifyEscalation({
+      ...ticket,
+      ...input,
+      phone,
+      contactName,
+      enHorario: hours.open,
+    });
+    return `Caso #${ticket.id} registrado. Aviso para el usuario: ${
+      humanReplyNotice(hours)
+    }`;
   };
 
   let result = null;
@@ -126,13 +148,15 @@ async function replyToTurn(
             logTag: "[SUPPORT]",
             onApiError: (status, bodyText) => {
               if (isAnthropicCreditExhausted(status, bodyText)) {
-                void markAnthropicCreditExhausted(supabase, "zmtech");
+                void handleCreditExhausted(supabase).catch(() => {});
               }
             },
           }),
       });
     }
-    if (result) void clearAnthropicCreditExhausted(supabase, "zmtech").catch(() => {});
+    if (result) {
+      void clearAnthropicCreditExhausted(supabase, "zmtech").catch(() => {});
+    }
   } else {
     console.error("[SUPPORT] ZMTECH_ANTHROPIC_API_KEY no configurada");
   }
@@ -149,15 +173,25 @@ async function replyToTurn(
       phone,
       contactName,
       summary: lastUserText.slice(0, 500) || "(sin texto)",
-      diagnosis: { origen: "falla_agente", en_horario: hours.open, hora_vet: hours.localTime },
+      diagnosis: {
+        origen: "falla_agente",
+        en_horario: hours.open,
+        hora_vet: hours.localTime,
+      },
     });
-    notifyEscalation({
+    await notifyEscalation({
       ...ticket,
       urgente: false,
       categoria: "falla_agente",
       resumen: lastUserText,
+      phone,
+      contactName,
+      enHorario: hours.open,
     });
-    text = `No pude procesar tu mensaje en este momento, pero registré tu caso con el número *#${ticket.id}*. ${humanReplyNotice(hours)}`;
+    text =
+      `No pude procesar tu mensaje en este momento, pero registré tu caso con el número *#${ticket.id}*. ${
+        humanReplyNotice(hours)
+      }`;
   }
 
   const wamid = await sendSupportText(phone, text);
@@ -176,14 +210,21 @@ async function processPayload(body: Record<string, unknown>): Promise<void> {
   for (const entry of (body.entry as Record<string, unknown>[]) ?? []) {
     for (const change of (entry.changes as Record<string, unknown>[]) ?? []) {
       const value = change.value as Record<string, unknown> | undefined;
-      const metadata = value?.metadata as { phone_number_id?: string } | undefined;
+      const metadata = value?.metadata as
+        | { phone_number_id?: string }
+        | undefined;
       if (!value?.messages) continue; // statuses y otros eventos
       if (!ourPhoneNumberId || metadata?.phone_number_id !== ourPhoneNumberId) {
-        console.warn("[SUPPORT] phone_number_id ajeno, se ignora:", metadata?.phone_number_id);
+        console.warn(
+          "[SUPPORT] phone_number_id ajeno, se ignora:",
+          metadata?.phone_number_id,
+        );
         continue;
       }
-      const contact = (value.contacts as Record<string, unknown>[] | undefined)?.[0];
-      const contactName = (contact?.profile as { name?: string } | undefined)?.name ?? null;
+      const contact = (value.contacts as Record<string, unknown>[] | undefined)
+        ?.[0];
+      const contactName =
+        (contact?.profile as { name?: string } | undefined)?.name ?? null;
 
       for (const message of value.messages as Record<string, unknown>[]) {
         const phone = typeof message.from === "string" ? message.from : "";

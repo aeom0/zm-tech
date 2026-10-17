@@ -16,26 +16,35 @@ export async function sendSupportText(
   const phoneNumberId = supportPhoneNumberId();
   const token = Deno.env.get("SUPPORT_WA_ACCESS_TOKEN");
   if (!phoneNumberId || !token) {
-    console.error("[SUPPORT] faltan SUPPORT_WA_PHONE_NUMBER_ID o SUPPORT_WA_ACCESS_TOKEN");
+    console.error(
+      "[SUPPORT] faltan SUPPORT_WA_PHONE_NUMBER_ID o SUPPORT_WA_ACCESS_TOKEN",
+    );
     return null;
   }
   try {
-    const res = await fetchImpl(`${WHATSAPP_API_URL}/${phoneNumberId}/messages`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+    const res = await fetchImpl(
+      `${WHATSAPP_API_URL}/${phoneNumberId}/messages`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messaging_product: "whatsapp",
+          recipient_type: "individual",
+          to,
+          type: "text",
+          text: { body, preview_url: false },
+        }),
       },
-      body: JSON.stringify({
-        messaging_product: "whatsapp",
-        recipient_type: "individual",
-        to,
-        type: "text",
-        text: { body, preview_url: false },
-      }),
-    });
+    );
     if (!res.ok) {
-      console.error("[SUPPORT] Meta send:", res.status, (await res.text()).slice(0, 200));
+      console.error(
+        "[SUPPORT] Meta send:",
+        res.status,
+        (await res.text()).slice(0, 200),
+      );
       return null;
     }
     const data = await res.json();

@@ -22,10 +22,16 @@ import type { SupportHoursStatus } from "./hours.ts";
 
 const MAX_TOOL_ROUNDS = 4;
 
-export const ESCALATION_CATEGORIES = ["error", "cobro", "cuenta", "otro"] as const;
+export const ESCALATION_CATEGORIES = [
+  "error",
+  "cobro",
+  "cuenta",
+  "otro",
+] as const;
 export type EscalationCategory = typeof ESCALATION_CATEGORIES[number];
 
-const SUPPORT_SYSTEM_PROMPT = `Eres el asistente de soporte de GeemaStudio, la plataforma de ZM Tech para salones de belleza (panel web, app y asistente de WhatsApp). Te escriben dueñas, dueños y personal de los salones que usan GeemaStudio.
+const SUPPORT_SYSTEM_PROMPT =
+  `Eres el asistente de soporte de GeemaStudio, la plataforma de ZM Tech para salones de belleza (panel web, app y asistente de WhatsApp). Te escriben dueñas, dueños y personal de los salones que usan GeemaStudio.
 
 Cómo escribes:
 - Español latinoamericano neutro, trato de tú, sin voseo.
@@ -117,7 +123,9 @@ export function formatGuia(categoria: string): string {
   const items = categoria === "todas"
     ? GUIA_AYUDA
     : GUIA_AYUDA.filter((i) => i.category === (categoria as GuiaCategoria));
-  if (items.length === 0) return "La guía no tiene entradas para esa categoría.";
+  if (items.length === 0) {
+    return "La guía no tiene entradas para esa categoría.";
+  }
   return items
     .map((i) =>
       [
@@ -176,7 +184,8 @@ async function runTool(
     return {
       type: "tool_result",
       tool_use_id: block.id,
-      content: "La herramienta falló. Dile al usuario que no se pudo registrar y que intente de nuevo en unos minutos.",
+      content:
+        "La herramienta falló. Dile al usuario que no se pudo registrar y que intente de nuevo en unos minutos.",
       is_error: true,
     };
   }
@@ -215,7 +224,9 @@ export async function runSupportAgent(opts: {
       if (round === MAX_TOOL_ROUNDS) break;
       messages.push({ role: "assistant", content: res.content });
       const results: AgentToolResultBlock[] = [];
-      for (const block of toolUses) results.push(await runTool(block, opts.handlers));
+      for (const block of toolUses) {
+        results.push(await runTool(block, opts.handlers));
+      }
       messages.push({ role: "user", content: results });
       continue;
     }

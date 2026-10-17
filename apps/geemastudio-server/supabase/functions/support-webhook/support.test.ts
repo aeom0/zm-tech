@@ -14,7 +14,10 @@ Deno.test("la guía de la Edge Function es idéntica a la de @geemastudio/shared
 });
 
 Deno.test("horario 8:00–20:00 hora de Venezuela (UTC−4)", () => {
-  assertEquals(supportHoursStatus(new Date("2026-10-16T11:59:00Z")).open, false); // 7:59
+  assertEquals(
+    supportHoursStatus(new Date("2026-10-16T11:59:00Z")).open,
+    false,
+  ); // 7:59
   assertEquals(supportHoursStatus(new Date("2026-10-16T12:00:00Z")).open, true); // 8:00
   assertEquals(supportHoursStatus(new Date("2026-10-16T23:59:00Z")).open, true); // 19:59
   const closed = supportHoursStatus(new Date("2026-10-17T00:00:00Z")); // 20:00
@@ -102,11 +105,18 @@ Deno.test("runSupportAgent ejecuta escalar_a_humano y devuelve el texto final", 
       const results = last.content as { content: string }[];
       assertEquals(results[0].content, "Caso #7 registrado.");
       return Promise.resolve(
-        apiResult([{ type: "text", text: "Listo, tu caso es el #7." }], "end_turn"),
+        apiResult(
+          [{ type: "text", text: "Listo, tu caso es el #7." }],
+          "end_turn",
+        ),
       );
     },
   });
-  assertEquals(escalated, [{ resumen: "Cobro doble", categoria: "cobro", urgente: false }]);
+  assertEquals(escalated, [{
+    resumen: "Cobro doble",
+    categoria: "cobro",
+    urgente: false,
+  }]);
   assertEquals(res?.text, "Listo, tu caso es el #7.");
   assertEquals(res?.inputTokens, 24);
   assertEquals(res?.outputTokens, 10);

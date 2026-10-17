@@ -57,6 +57,19 @@ async function upsertAppConfig(
   }
 }
 
+/** True si la cuenta ya figura con `credit_exhausted` (para avisar una sola vez). */
+export async function isAnthropicCreditMarkedExhausted(
+  supabase: SupabaseClient,
+  account: AnthropicAccount,
+): Promise<boolean> {
+  const { data } = await supabase
+    .from("app_config")
+    .select("value")
+    .eq("key", anthropicCreditKeys(account).apiStatus)
+    .maybeSingle();
+  return data?.value === "credit_exhausted";
+}
+
 /** Crédito agotado: saldo 0 y estado `credit_exhausted` para esa cuenta. */
 export async function markAnthropicCreditExhausted(
   supabase: SupabaseClient,
@@ -72,12 +85,6 @@ export async function clearAnthropicCreditExhausted(
   supabase: SupabaseClient,
   account: AnthropicAccount,
 ): Promise<void> {
-  const keys = anthropicCreditKeys(account);
-  const { data } = await supabase
-    .from("app_config")
-    .select("value")
-    .eq("key", keys.apiStatus)
-    .maybeSingle();
-  if (data?.value !== "credit_exhausted") return;
-  await upsertAppConfig(supabase, keys.apiStatus, "ok");
+  if (!(await isAnthropicCreditMarkedExhausted(supabase, account))) return;
+  await upsertAppConfig(supabase, anthropicCreditKeys(account).apiStatus, "ok");
 }
