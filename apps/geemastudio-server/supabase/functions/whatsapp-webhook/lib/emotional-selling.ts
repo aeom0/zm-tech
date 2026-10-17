@@ -37,7 +37,7 @@ export const EMOTIONAL_DECLINE_REPLY_CTWA_DEFAULT =
   "¡Por supuesto! 💜 Tómate tu tiempo — cuando quieras retomar, escríbenos por aquí y te ayudamos con gusto. ¡Que tengas un lindo día! 🌸";
 
 export const EMOTIONAL_NUDGE2_REPLY_CTWA_DEFAULT =
-  "Sin presión 💜 Si más adelante quieres retomar tu cita, escríbenos por aquí y te pasamos los horarios en segundos.";
+  "Si más adelante quieres retomar tu cita, escríbenos por aquí y te pasamos los horarios en segundos. 💜";
 
 export const EMOTIONAL_PRICE_CTA_EXT_DEFAULT =
   "Así puede quedar {parte} con {servicio} ✨\nEsa mirada que buscas puede ser tuya — ¿te agendo cuando te animes? 💜";

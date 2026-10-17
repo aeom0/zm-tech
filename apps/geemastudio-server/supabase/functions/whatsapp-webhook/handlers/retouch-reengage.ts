@@ -186,7 +186,7 @@ Escribe un mensaje breve mostrando apertura a lo que quiera esta vez; le enviare
   } else {
     userMsg =
       `La clienta ${ctx.clientName} tocó "Más adelante" en el recordatorio de retoque (${ctx.serviceName}).
-Escribe UNA frase cálida respetando su tiempo, sin presión ni menú.`;
+Escribe UNA frase cálida respetando su tiempo, sin menú. No uses la frase «sin presión».`;
   }
 
   const result = await callAnthropicAPI(system, userMsg, {
